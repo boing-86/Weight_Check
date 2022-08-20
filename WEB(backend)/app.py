@@ -31,10 +31,14 @@ def get_weight_sum():
         else:
             cursor.execute(
                 "SELECT order_id, basket_id FROM das_product_basket WHERE das_id = %s" %barcode_id)
-            id, count, basket_id  = cursor.fatchone()
+            order_id, basket_id = cursor.fatchone()
+            
+            cursor.execute(
+                "SELECT product_id_list, product_count_list FROM customer_order WHERE order_id = %s" % order_id)
+            ids, counts = cursor.fatchone()
         
-            product_ids = id.split(',')
-            product_counts = count.split(',')
+            product_ids = ids.split(',')
+            product_counts = counts.split(',')
     
         # 바구니 무게 더하기
         cursor.execute(
