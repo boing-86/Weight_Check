@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f1dd1725-6241-4d04-847f-096f3e0ccce9" name="Changes" comment="" />
+    <list default="true" id="f1dd1725-6241-4d04-847f-096f3e0ccce9" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/WEB(backend).iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/WEB(backend).iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WEB(frontend)/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/WEB(frontend)/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WEB(frontend)/static/init.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WEB(frontend)/templates/init.txt" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,7 +22,10 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2DbqPuTtDQPOLLdda9fKYyyOSF7" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -23,11 +33,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/mskang/Desktop/kurlyhack2022",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="WEB(backend)" type="Python.FlaskServer">
       <module name="WEB(backend)" />
@@ -54,10 +68,22 @@
       <option name="presentableId" value="Default" />
       <updated>1660978110979</updated>
       <workItem from="1660978115233" duration="1362000" />
+      <workItem from="1660983279873" duration="345000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
