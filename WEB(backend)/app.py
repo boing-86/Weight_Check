@@ -2,14 +2,13 @@ from flask import Flask, request, jsonify
 import pymysql
 import math
 
-# mysql = MySQL()
 app = Flask(__name__)
 # todo: mysql 연결 설정 하기
-mysql = pymysql.connect(host = '',
-                        user='',
-                        password='',
-                        database='',
-                        cursorclass=pymysql.cursors.DictCursor)
+mysql = pymysql.connect(host='localhost',  # Auroua Endpoint
+                        port=3601,  # Auroua Endpoint Port
+                        user='hyunwoo0081',
+                        password='********',
+                        database='KurlyCheck')  # Schema Name
 
 @app.route('/')
 def hello_world():
@@ -17,38 +16,40 @@ def hello_world():
 
 @app.route('/weight', methods=['POST'])
 def get_weight_sum():
-    mean = std = 0
     barcode_id = request.form['id']
+    is_picking_zone = barcode_id[0] == 'P'
 
-    # 바코드가 피킹/DAS 에서 쓰이는지 확인
-    # todo: 바코드 임의로 정하면, 문자열 파싱해서 알 수 있음
-    is_picking_zone = True # 임의 값
-
-    # DB 에서 상품 리스트 찾기
     with mysql.cursor() as cursor:
+        # 피킹/DAS 별 상품 리스트 만들기
         if is_picking_zone:
-            cursor.execute("sql: picking_id == %s" %barcode_id)
-            data = cursor.fatchone()
-            
-            product_names = [ data['product_id'] ]
-            product_counts= [ data['p_product_count'] ]
+            cursor.execute(
+                "SELECT product_id, p_product_count, basket_id FROM picking_product_basket WHERE picking_id = %s" %barcode_id)
+            id, count, basket_id = cursor.fatchone()
+        
+            product_ids = [id]
+            product_counts = [count]
         else:
-            cursor.execute("sql: das_id == %s" %barcode_id)
-            data = cursor.fatchone()
-            
-            # todo: 쿼리 문자열 파싱 (string -> List)
-            product_names = data['']
-            product_counts= data['']
+            cursor.execute(
+                "SELECT order_id, basket_id FROM das_product_basket WHERE das_id = %s" %barcode_id)
+            id, count, basket_id  = cursor.fatchone()
+        
+            product_ids = id.split(',')
+            product_counts = count.split(',')
     
-    # DB 에서 상품 평균, 표준 편차 구하기
-    with mysql.cursor() as cursor:
-        for name, count in zip(product_names, product_counts):
-            cursor.execute("sql: product_id == %s" %name)
-            product = cursor.fatchone()
-            
-            mean += count * product['p_weight_avg']
-            std  += count *(product['p_weight_std']**2)
-    std = math.sqrt(std)
+        # 바구니 무게 더하기
+        cursor.execute(
+            "SELECT b_weight_avg, b_weight_std FROM basket WHERE basket_id = %s" % basket_id)
+        mean, std = cursor.fatchone()
+    
+        # DB 에서 상품 평균, 표준 편차 구하기
+        for name, count in zip(product_ids, product_counts):
+            cursor.execute(
+                "SELECT p_weight_avg, p_weight_std FROM product WHERE product_id == %s" %name)
+            p_avg, p_std = cursor.fatchone()
+        
+            mean += count *  p_avg
+            std  += count * (p_std**2)
+        std = math.sqrt(std)
 
     return jsonify({'mean': mean, 'std': std})
 
