@@ -1,18 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from os import environ
-from sshtunnel import SSHTunnelForwarder
 import pymysql
+import json
 import math
 
 app = Flask(__name__)
-
-# todo: SHH를 이용하여 데이터베이스 연결
-# tunnel = SSHTunnelForwarder(("", ""),  # SSH Tunnel host address, SSH Tunnel IP
-#                             ssh_pkey=environ.get('KurlyCheckDbSSH'))
-
 # mysql 연결 하기
-mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Auroua Endpoint
-                        port=int(environ.get('KurlyCheckDbPort')),  # Auroua Endpoint Port
+mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Endpoint
+                        port=int(environ.get('KurlyCheckDbPort')),  # Endpoint Port
                         user=environ.get('KurlyCheckDbUser'),
                         password=environ.get('KurlyCheckDbPswd'),
                         database='kdb')  # Schema Name
@@ -28,25 +23,20 @@ def get_weight_sum():
     is_picking_zone = barcode_id[0] == 'P'
 
     with mysql.cursor() as cursor:
-        # 피킹/DAS 별 상품 리스트 만들기
+        # 피킹/DAS 상품 json 불러오기
         if is_picking_zone:
             cursor.execute(
-                "SELECT product_id, p_product_count, basket_id FROM picking_product_basket WHERE picking_id = %s" %barcode_id)
-            id, count, basket_id = cursor.fetchone()
-        
-            product_ids = [id]
-            product_counts = [count]
+                "SELECT product_list, basket_id FROM picking_product_basket WHERE picking_id = %s" %barcode_id)
+            products_string, basket_id = cursor.fetchone()
         else:
             cursor.execute(
                 "SELECT order_id, basket_id FROM das_product_basket WHERE das_id = %s" %barcode_id)
             order_id, basket_id = cursor.fetchone()
             
             cursor.execute(
-                "SELECT product_id_list, product_count_list FROM customer_order WHERE order_id = %s" % order_id)
-            ids, counts = cursor.fetchone()
-        
-            product_ids = ids.split(',')
-            product_counts = counts.split(',')
+                "SELECT product_list FROM customer_order WHERE order_id = %s" % order_id)
+            products_string = cursor.fetchone()
+        products_json = json.loads(products_string.replace("'", "\""))
     
         # 바구니 무게 더하기
         cursor.execute(
@@ -54,7 +44,7 @@ def get_weight_sum():
         mean, std = cursor.fetchone()
     
         # DB 에서 상품 평균, 표준 편차 구하기
-        for name, count in zip(product_ids, product_counts):
+        for name, count in products_json.items():
             cursor.execute(
                 "SELECT p_weight_avg, p_weight_std FROM product WHERE product_id == %s" %name)
             p_avg, p_std = cursor.fetchone()
@@ -67,7 +57,7 @@ def get_weight_sum():
     min_weight = mean - 3*std
     max_weight = mean + 3*std
 
-    return jsonify({'min': min_weight, 'max': max_weight})
+    return json.dumps({'min': min_weight, 'max': max_weight})
 
 @app.route('/save/weight', methods=['POST'])
 def save_working_data():
@@ -98,9 +88,10 @@ def save_working_data():
 def get_product():
     with mysql.cursor() as cursor:
         cursor.execute("SELECT * FROM product")
-        print(cursor.fetchall())
-
-    return 'test'
+        id, name, avg, std = cursor.fetchone()
+        print(id, name, avg, std)
+        
+    return json.dumps({'id':id, 'name':name, 'avg':avg, 'std':std}, ensure_ascii=False)
 
 @app.errorhandler(404)
 def error404():
