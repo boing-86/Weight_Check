@@ -1,13 +1,20 @@
 from flask import Flask, request, jsonify
+from os import environ
+from sshtunnel import SSHTunnelForwarder
 import pymysql
 import math
 
 app = Flask(__name__)
-# mysql 연결 설정 하기
-mysql = pymysql.connect(host='',  # Auroua Endpoint
-                        port=3306,  # Auroua Endpoint Port
-                        user='',
-                        password='',
+
+# todo: SHH를 이용하여 데이터베이스 연결
+# tunnel = SSHTunnelForwarder(("", ""),  # SSH Tunnel host address, SSH Tunnel IP
+#                             ssh_pkey=environ.get('KurlyCheckDbSSH'))
+
+# mysql 연결 하기
+mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Auroua Endpoint
+                        port=int(environ.get('KurlyCheckDbPort')),  # Auroua Endpoint Port
+                        user=environ.get('KurlyCheckDbUser'),
+                        password=environ.get('KurlyCheckDbPswd'),
                         database='kdb')  # Schema Name
 
 @app.route('/')
