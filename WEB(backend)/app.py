@@ -16,7 +16,8 @@ def hello_world():
 
 @app.route('/weight', methods=['POST'])
 def get_weight_sum():
-    barcode_id = request.form['id']
+    data = request.get_json()
+    barcode_id = data['id']
     is_picking_zone = barcode_id[0] == 'P'
 
     with mysql.cursor() as cursor:
@@ -54,8 +55,37 @@ def get_weight_sum():
             mean += count *  p_avg
             std  += count * (p_std**2)
         std = math.sqrt(std)
+    
+    # 기대 중량 최대, 최소 구하기
+    min_weight = mean - 3*std
+    max_weight = mean + 3*std
 
-    return jsonify({'mean': mean, 'std': std})
+    return jsonify({'min': min_weight, 'max': max_weight})
+
+@app.route('/save/weight', methods=['POST'])
+def save_working_data():
+    data = request.get_json()
+    user_key = data['user_key']
+    finish_time = data['finish_time']
+    real_weight = data['weight']
+    barcode_id = data['id']
+    is_picking_zone = barcode_id[0] == 'P'
+    
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            "SELECT user_id FROM login WHERE user_key == %s" %user_key)
+        user_id = cursor.fatchone()
+        
+        if is_picking_zone:
+            cursor.execute(
+                "UPDATE picking_product_basket SET user_id=%s, p_finish_time=%s, p_real_weight=%lf, p_finish=true WHERE picking_id=%s"
+                %(user_id, finish_time, real_weight, barcode_id))
+        else:
+            cursor.execute(
+                "UPDATE das_product_basket SET  user_id=%s, p_finish_time=%s, p_real_weight=%lf, p_finish=true WHERE das_id=%s"
+                %(user_id, finish_time, real_weight, barcode_id))
+    
+    return 'saved'
 
 @app.errorhandler(404)
 def error404():
@@ -63,3 +93,4 @@ def error404():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6000, debug=True)
+    

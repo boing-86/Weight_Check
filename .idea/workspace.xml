@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f1dd1725-6241-4d04-847f-096f3e0ccce9" name="Changes" comment="" />
+    <list default="true" id="f1dd1725-6241-4d04-847f-096f3e0ccce9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WEB(backend)/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/WEB(backend)/app.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,8 +48,9 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../djangoProject" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
   </component>
   <component name="RunManager" selected="Flask server.backend">
     <configuration name="backend" type="Python.FlaskServer">
@@ -92,6 +98,7 @@
       <updated>1660978110979</updated>
       <workItem from="1660978115233" duration="1362000" />
       <workItem from="1660983279873" duration="345000" />
+      <workItem from="1661050098248" duration="4714000" />
     </task>
     <task id="LOCAL-00001" summary="backend weight 기능 일부 추가">
       <created>1660990447107</created>
@@ -114,7 +121,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661011981513</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="backend /weight 기능 수정&#10;todo: db 연결 필요함">
+      <created>1661012502955</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1661012502955</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,13 +158,17 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+    </ignored-roots>
     <MESSAGE value="backend weight 기능 일부 추가" />
     <MESSAGE value="backend /weight 라우팅 설정 및 기능 추가&#10;database 설정, database string 형식 결정 후 재설계 예정" />
     <MESSAGE value="backend /weight 기능 수정&#10;sql 식 임의 추가, db 연결 필요함" />
-    <option name="LAST_COMMIT_MESSAGE" value="backend /weight 기능 수정&#10;sql 식 임의 추가, db 연결 필요함" />
+    <MESSAGE value="backend /weight 기능 수정&#10;todo: db 연결 필요함" />
+    <option name="LAST_COMMIT_MESSAGE" value="backend /weight 기능 수정&#10;todo: db 연결 필요함" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Weight_Check$backend.coverage" NAME="backend Coverage Results" MODIFIED="1661012177638" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Weight_Check$backend.coverage" NAME="backend Coverage Results" MODIFIED="1661052995095" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Weight_Check$frontend.coverage" NAME="frontend Coverage Results" MODIFIED="1660980432279" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
