@@ -70,9 +70,10 @@ def save_working_data():
     is_picking_zone = barcode_id[0] == 'P'
     
     with mysql.cursor() as cursor:
-        cursor.execute(
-            f"SELECT user_id FROM login WHERE user_key='{user_key}'")
-        user_id = cursor.fetchone()
+        # cursor.execute(
+        #     f"SELECT user_id FROM login WHERE user_key='{user_key}'")
+        # user_id = cursor.fetchone()
+        user_id = user_key
         
         if is_picking_zone:
             cursor.execute(

@@ -1,6 +1,9 @@
 from flask import Flask, request, render_template, redirect, session
+from datetime import datetime
 import requests
 import bcrypt
+import json
+import re
 
 
 BACKEND_ADDRESS = "http://127.0.0.1:5000"
@@ -21,8 +24,8 @@ def page_main():
 
 @app.route('/login', methods=['GET'])
 def page_login():
-    # if 'user_id' in session:
-    #     return redirect('/main')
+    if 'user_id' in session:
+        return redirect('/main')
     return render_template('login.html')
 
 ###################### APIs ########################
@@ -31,6 +34,11 @@ def page_login():
 def get_weight():
     user_id = request.form['username']
     user_pw = request.form['password']
+    id_re = re.compile('/^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;')
+    pw_re = re.compile('/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;')
+    
+    if id_re.match(user_id) == None or pw_re.match(user_pw) == None:
+        return json.dumps({'error': "아이디 또는 비밀번호 형식이 다릅니다."})
 
     password = requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': user_id}).text
     bcrypt_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -39,24 +47,27 @@ def get_weight():
         session['user_id'] = user_id
         return redirect('/main')
     
-    return redirect('/login')
+    return json.dumps({'error': "비밀번호가 다릅니다."})
 
 @app.route('/api/logout', methods=['POST'])
 def log_out():
     session.pop('user_id')
     return redirect('/login')
 
-@app.route('/api/main/real_weight')
-def get_real_weight():
-    return 'Hello'
 
 @app.route('/api/main/exp_weight')
 def get_exp_weight():
-    return 'Hello'
+    return requests.post(BACKEND_ADDRESS + "/weight").json()
 
 @app.route('/api/main/result')
 def get_result():
-    return 'Hello'
+    data = request.get_json()
+    data['user_key'] = session['user_id']
+    data['finish_time'] = datetime.now().strftime('%Y %m %d %H %M %S')
+
+    requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
+    
+    return 'saved'
 
 ################# T  E  S  T ##################
 
