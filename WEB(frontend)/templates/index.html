@@ -4,12 +4,15 @@
 	<meta charset="UTF-8">
     <title>MarketKurly Check System</title>
     <link rel="icon" type="image/x-icon" href="kurly_icon_purple.png">
-	<!--css 파일 위치-->
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <!--폰트-->
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
+   
+	<!--폰트-->
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
 	<!--jquery-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!--css 경로-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+	<!--js 경로-->
+	<script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 <body>
 	<div class="wrapper login-wrap">
