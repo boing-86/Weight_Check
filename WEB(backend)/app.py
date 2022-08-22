@@ -92,6 +92,17 @@ def get_test_product():
         
     return json.dumps({'id':id, 'name':name, 'avg':avg, 'std':std}, ensure_ascii=False)
 
+@app.route('/get/password', methods=['POST'])
+def get_user_password():
+    user_id = request.get_json()['user_id']
+    
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            f"SELECT user_password FROM user WHERE user_id='{user_id}'")
+        password = cursor.fetchone()[0]
+    
+    return json.dumps({'password': password})
+
 @app.errorhandler(404)
 def error404():
     return "Not Found"

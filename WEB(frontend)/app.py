@@ -1,12 +1,62 @@
-from flask import Flask, render_template   # flask 모듈과 관련함수 불러옴
+import requests
+from flask import Flask, request, render_template, redirect, session
 
-app = Flask(__name__)       # Flask라는 이름의 객체 생성
-# GPIO.cleanup()
 
-@app.route('/')                       # 기본 주소
+BACKEND_ADDRESS = "http://127.0.0.1:5000"
+
+app = Flask(__name__)
+app.secret_key = "123456129efl32089df@#$fd"
+
+
+@app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
-    #index2.html에 스위치의 눌림 여부 현황을 전달
+    if 'user_id' in session:
+        return redirect('/main')
+    return redirect('login')
+
+@app.route('/main', methods=['GET'])
+def page_main():
+    return render_template('main.html')
+
+@app.route('/login', methods=['GET'])
+def page_login():
+    return render_template('login.html')
+
+###################### APIs ########################
+
+@app.route('/api/login', methods=['POST'])
+def get_weight():
+    user_id = request.form['username']
+    user_pw = request.form['password']
+    
+    password = requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': user_id})
+    
+    if user_pw == password:
+        session['user_id'] = user_id
+        return redirect('/main')
+    
+    return redirect('login')
+
+@app.route('/api/main/real_weight')
+def get_real_weight():
+    return 'Hello'
+
+@app.route('/api/main/exp_weight')
+def get_exp_weight():
+    return 'Hello'
+
+@app.route('/api/main/result')
+def get_result():
+    return 'Hello'
+
+@app.route('/api')
+def test():
+    path = request.path
+    host = request.host_url
+    
+    return {"path":path, "host": host}
+
+
 
 if __name__ == "__main__":  # 웹사이트를 호스팅하여 접속자에게 보여주기 위한 부분
    app.run(host="0.0.0.0", port = "5000")
