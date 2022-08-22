@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f1dd1725-6241-4d04-847f-096f3e0ccce9" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.idea/WEB(backend).iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/WEB(backend).iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WEB(frontend)/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/WEB(frontend)/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WEB(frontend)/static/init.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WEB(frontend)/templates/init.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/raspberrypi/flask_sensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/raspberrypi/flask_sensor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raspberrypi/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/raspberrypi/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,15 +30,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/mskang/Desktop/kurlyhack2022",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/mskang/Desktop/kurlyhack2022&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="WEB(backend)" type="Python.FlaskServer">
       <module name="WEB(backend)" />
@@ -69,6 +66,12 @@
       <updated>1660978110979</updated>
       <workItem from="1660978115233" duration="1362000" />
       <workItem from="1660983279873" duration="345000" />
+      <workItem from="1660996026516" duration="1256000" />
+      <workItem from="1661008718240" duration="1236000" />
+      <workItem from="1661064882474" duration="1371000" />
+      <workItem from="1661162677045" duration="1361000" />
+      <workItem from="1661165131827" duration="522000" />
+      <workItem from="1661165677098" duration="1264000" />
     </task>
     <servers />
   </component>

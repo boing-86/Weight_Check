@@ -3,19 +3,29 @@
 	<title>RASPBERRY PI STATE VIEWER</title>	
 	<meta name="viewport" content="width=device-width initial-scale=1">
 	<!--1초마다 웹사이트 새로고침을 하여 라즈베리파이의 상태를 갱신-->
-	<meta http-equiv="refresh" content="1">
+	<!--meta http-equiv="refresh" content="1"-->
 	</head> 
 	<body>
-		<h1>라즈베리파이의 로드셀 데이터를 웹사이트로 전달</h1>
+		<h1>라즈베리파이의 중량값, 바코드를 컬리체크로 전달</h1>
         <hr>
-
-		<div style="padding-left:20px;">
-			<h3>중량 상태</h3>
-				<p style="color: red;">
-					<b>중량: {{weight}}
-					</b>	
-				</p>
-            <hr>
-		</div>
+        <form method="POST" action="/enter">
+            <div style="padding-left:20px;">
+                <h3>바코드</h3>
+                    <label for="nm">인식번호</label>
+                    <input type="text" name="nm">
+                    <div class="'button'">
+                        <button type="submit">Enter</button>
+                    </div>
+                <hr>
+                <h3>값 상태</h3>
+                    <p>
+                        <b>인식번호: {{p_id}}
+                        </b>
+                    </p>
+                    <b>중량: {{weight}}
+                    </b>
+                <hr>
+            </div>
+        </form>
 	</body>
 </html>
