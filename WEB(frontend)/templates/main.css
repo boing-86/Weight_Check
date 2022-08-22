@@ -1,0 +1,93 @@
+/* common */
+.wrapper {max-width:1250px; margin:0 auto;}
+.is-m {display:none !important;}
+@media (max-width:1250px){
+.is-pc {display:none !important;}
+.is-m {display:block !important;}
+.wrapper {padding:0 20px;}
+}
+
+
+
+/* Header */
+body {
+    background: rgba(83, 36, 114, 1);
+}
+.inner {
+    background: rgba(83, 36, 114, 1);
+    padding: 1rem;
+    height: 100vh;
+}
+
+.inner .header {
+    display:flex;
+    align-items:center;
+}
+.inner .header img {
+    width:15%; padding: 1rem;
+}
+.inner .header h2 {
+    width: 90%;
+    text-align:center;
+    color:#ffffff;
+    font-size: 3rem;
+}
+
+.inner .input-box {
+    padding: 2rem;
+    background-color:#ffffff;
+    border-radius: 30px;
+}
+.inner .input-box .inner-input{
+    display: flex;
+    padding: 0.5rem;
+    font-size: 1rem;
+    align-items:center;
+}
+.inner .input-box .inner-input p {
+    font-size: 1.5rem;
+    color: rgba(83, 36, 114, 1);
+    padding-right: 1rem;
+    width: 20%;
+    text-align: center;
+}
+.inner .input-box .inner-input input {
+    width: 80%;
+    height: 5rem;
+    border: 1px solid rgba(83, 36, 114, 1);
+    border-radius: 30px;
+    align-items:center;
+    padding: 0 1rem;
+}
+.inner .input-box .result {
+    width: 100%;
+    display: flex;
+    margin-top: 1rem;
+}
+.inner .input-box .result p {
+    font-size: 2rem;
+    color: rgba(83, 36, 114, 1);
+    padding-right: 1rem;
+    width: 20%;
+    padding-right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.inner .input-box .result  .result-text {
+    width: 80%;
+    height: 5rem;
+    text-align: center;
+    background-color: rgba(83, 36, 114, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: green;
+    font-size: 40px;
+    padding: 1rem 0;
+    border-radius: 30px;
+}
+
+@media (max-width:1250px){
+    /* 가로 사이즈가 1250px일 때 어떻게 할 건지 설정하는 부분 */
+}
