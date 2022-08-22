@@ -1,0 +1,96 @@
+.wrapper {
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+.is-m {
+    display: none !important;
+}
+
+@media (max-width: 1250px) {
+    .is-pc {
+        display: none !important;
+    }
+
+    .is-m {
+        display: block !important;
+    }
+
+    .wrapper {
+        padding: 0 20px;
+    }
+}
+
+* {
+    font-family: 'IBM Plex Sans KR', sans-serif;
+}
+
+body {
+    background: rgba(83, 36, 114, 1);
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    background: rgba(83, 36, 114, 1);
+}
+
+img {
+    width: 30%;
+}
+
+h1 {
+    text-align: center;
+}
+
+#main-holder {
+    width: 50%;
+    height: 70%;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 30px;
+}
+
+#login-form {
+    align-self: flex-start;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
+
+.login-form-field::placeholder {
+    color: #3a3a3a;
+}
+
+.login-form-field {
+    width: 30vh;
+    border: none;
+    border-bottom: 1px solid #3a3a3a;
+    margin-bottom: 20px;
+    border-radius: 3px;
+    outline: none;
+    padding: 0px 0px 5px 5px;
+}
+
+#login-form-submit {
+    width: 100%;
+    padding: 7px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    background: rgba(83, 36, 114, 1);
+
+    cursor: pointer;
+    outline: none;
+}
