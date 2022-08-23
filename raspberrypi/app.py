@@ -1,29 +1,71 @@
-from flask import Flask, render_template   # flask 모듈과 관련함수 불러옴
+from os import P_PID
+from flask import Flask, request, jsonify, render_template   # flask 모듈과 관련함수 불러옴
+from flask_jsonpify import jsonpify
 import RPi.GPIO as GPIO     # 라즈베리파이 GPIO 관련 모듈을 불러옴
 import time
 import sys
 from hx711 import HX711
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)       # Flask라는 이름의 객체 생성
 # GPIO.cleanup()
+CORS(app) #CORS 허용
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 hx = HX711(5, 6)
 hx.set_reading_format("MSB", "MSB")
 hx.set_reference_unit(205)
 hx.reset()
 hx.tare()
-weight = 0
+# global weight
+# weight = 0
+# global p_id
+# p_id = 0
 
-@app.route('/')                       # 기본 주소
+@app.route('/')                 
 def home():
-    val = hx.get_weight(5) / 1000
-    hx.power_down()
-    hx.power_up()
-    weight = round(val, 2)
-    return render_template('index.html', weight = weight)
-    #index2.html에 스위치의 눌림 여부 현황을 전달
+    return "append '/enter' after the url"
+    
 
-if __name__ == "__main__":  # 웹사이트를 호스팅하여 접속자에게 보여주기 위한 부분
-   app.run(host="0.0.0.0", port = "5000")
-   # host는 현재 라즈베리파이의 내부 IP, port는 임의로 설정
-   # 해당 내부 IP와 port를 포트포워딩 해두면 외부에서도 접속가능
+@app.route('/enter', methods=['GET','POST'])
+def enter():
+    if request.method == 'GET':
+        return render_template('index.html', weight = None, p_id = None)
+
+    elif request.method == 'POST':
+        val = hx.get_weight(5) / 1000
+        hx.power_down()
+        hx.power_up()
+        global weight
+        weight = round(val, 2)
+        global p_id
+        p_id = request.form['p_id']
+        print("weight : ", weight)
+        print("identity value : ", p_id)
+        return render_template('index.html', weight = weight, p_id = p_id)
+
+@app.route('/real_weight', methods=['GET'])
+@cross_origin(allow_headers=['Content-Type'])
+def real_weight():
+    # json, keyvalue 로 넘겨주고 나서
+    # 값 넘겨주고 바로 None 으로 바꿔버림!!!
+    # 값이 None 이면 request에 이상한 거 넣어줌
+    if request.method == 'GET':
+        
+        print(request)
+        r_id, r_weight = happy()
+        print(r_id, r_weight)
+        return jsonpify({ 'weight' : r_weight, 'barcode' : r_id})
+
+def happy():
+    global p_id
+    global weight
+    id = p_id
+    p_id = None
+    wt = weight
+    weight = 0
+    return id, wt
+
+
+if __name__ == "__main__":  
+   app.run(host="127.0.0.1", port = "5000")
