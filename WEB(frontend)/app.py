@@ -90,9 +90,9 @@ def test():
 def test2():
     return requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': "A00004689"}).text
 
-# @app.route('/api/test3')
-# def test3():
-#     return
+@app.route('/api/test3')
+def test3():
+    return json.dumps({'id':1234, 'weight':12342})
 
 if __name__ == "__main__":  # 웹사이트를 호스팅하여 접속자에게 보여주기 위한 부분
    app.run(host="0.0.0.0", port = "5000")

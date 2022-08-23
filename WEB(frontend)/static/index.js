@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    //UpdateProductInfoJsonp()
+    UpdateProductInfoJsonp()
     UpdateWidgets();
 });
 

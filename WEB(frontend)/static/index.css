@@ -65,7 +65,7 @@ body {
     align-items: center;
 }
 
-.inner .input-box .inner-input p {
+.inner-input p:first-child {
     font-size: 2rem;
     color: rgba(83, 36, 114, 1);
     padding-right: 1rem;
@@ -73,12 +73,13 @@ body {
     text-align: center;
 }
 
-.inner .input-box .inner-input c {
+.inner-input p:last-child {
     width: 80%;
     height: 3rem;
     border: 1px solid rgba(83, 36, 114, 1);
     border-radius: 30px;
     padding: 1rem 0;
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,12 +93,11 @@ body {
     margin-top: 1rem;
 }
 
-.inner .input-box .result p {
+.inner .input-box .result p:first-child {
     font-size: 3rem;
     color: rgba(83, 36, 114, 1);
     padding-right: 1rem;
     width: 20%;
-    padding-right: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
