@@ -1,15 +1,20 @@
 from flask import Flask, request, render_template, redirect, session
-from flask_jsonpify import jsonpify
+from os import getenv
 from datetime import datetime
 import requests
+import random
 import bcrypt
 import re
 
 
-BACKEND_ADDRESS = "http://127.0.0.1:5000"
+if not getenv('KurlyCheckBeHost') and not getenv('KurlyCheckBePort'):
+    print("\033[31mFrontend(app.py) : make environment variable for BE server connection!\033[0m")
+
+BACKEND_ADDRESS = f"http://{getenv('KurlyCheckBeHost')}:{getenv('KurlyCheckBePort')}"
+
 
 app = Flask(__name__)
-app.secret_key = "123456129efl32089df@#$fd"
+app.secret_key = bcrypt.hashpw(str(random.random()).encode('utf-8'), bcrypt.gensalt())
 
 
 @app.route('/', methods=['GET'])
@@ -44,11 +49,9 @@ def try_login(form):
     
     # 아이디: 영문, 숫자조합 5~19글자
     # 비밀번: 영문, 숫자, 특수문자 조합 8~16글자
-    #정규식이 잘 안되네요 ㅎㅎ
-    id_re = re.compile('/^[A-Za-z]+[A-Za-z0-9]{5,19}$/g')
-    pw_re = re.compile('/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/')
+    id_re = re.compile('[A-Za-z]+[A-Za-z0-9]{5,19}')
+    pw_re = re.compile('(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}')
 
-    print(id_re.match(form['id']), pw_re.match(form['pw']))
     if id_re.match(form['id']) == None or pw_re.match(form['pw']) == None:
         return False
     
@@ -68,10 +71,9 @@ def log_out():
     session.pop('user_id')
     return redirect('/login')
 
-
 @app.route('/api/main/exp_weight')
 def get_exp_weight():
-    return requests.post(BACKEND_ADDRESS + "/weight").json()
+    return requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json()).json()
 
 @app.route('/api/main/result')
 def get_result():
@@ -89,25 +91,17 @@ def get_result():
 def get_bcrypt_str():
     password = request.args.get('pw')
     bcrypt_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-    
+
     return bcrypt_pw
 
 @app.route('/api/test1')
 def test():
-    path = request.path
-    host = request.host_url
-    
-    return {"path":path, "host": host}
+    return {"path":request.path, "host": request.host_url}
 
 @app.route('/api/test2')
 def test2():
     return requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': "A00004689"}).text
 
-@app.route('/real_weight2')
-def test3():
-    weight = 456789
-    p_id = None
-    return jsonpify({'weight': weight, 'barcode': p_id})
 
 if __name__ == "__main__":
    app.run()

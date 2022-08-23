@@ -104,7 +104,11 @@ body {
     font-weight: bold;
 }
 
-.inner .input-box .result .result-text {
+#result_box {
+    width: 100%;
+}
+
+.inner .input-box .result .result-text{
     width: 80%;
     height: 8rem;
     text-align: center;

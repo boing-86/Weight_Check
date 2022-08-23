@@ -6,8 +6,8 @@ import math
 
 app = Flask(__name__)
 
-if (not environ.get('KurlyCheckDbHost') and not environ.get('KurlyCheckDbPort') and
-        not environ.get('KurlyCheckDbUser') and not environ.get('KurlyCheckDbPswd')):
+if not environ.get('KurlyCheckDbHost') and not environ.get('KurlyCheckDbPort') and\
+        not environ.get('KurlyCheckDbUser') and not environ.get('KurlyCheckDbPswd'):
     print("make environment variable for db server connection!")
 
 mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Endpoint
