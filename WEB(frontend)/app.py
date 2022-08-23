@@ -11,8 +11,13 @@ if not getenv('KurlyCheckBeHost') and not getenv('KurlyCheckBePort'):
 
 BACKEND_ADDRESS = f"http://{getenv('KurlyCheckBeHost')}:{getenv('KurlyCheckBePort')}"
 
+
+def encrypt(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+
 app = Flask(__name__)
-app.secret_key = bcrypt.hashpw(str(random.random()).encode('utf-8'), bcrypt.gensalt())
+app.secret_key = encrypt(str(random.random()))
 
 
 @app.route('/', methods=['GET'])
@@ -63,7 +68,7 @@ def try_login(form):
     password = data['password']
     is_admin = data['is_admin']
     
-    bcrypt_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    bcrypt_pw = encrypt(password)
     
     if form['pw'] == bcrypt_pw:
         session['user_id'] = form['id']
@@ -98,13 +103,37 @@ def get_result():
     return 'saved'
 
 
+# User Api
+@app.route('/api/admin/make_user')
+def make_user():
+    data = request.get_json()
+    data['password'] = encrypt(data['password'])
+    requests.post(BACKEND_ADDRESS + "/user/make_user", json=data)
+    return 'saved'
+
+
+@app.route('/api/admin/update_password')
+def update_password():
+    data = request.get_json()
+    data['password'] = encrypt(data['password'])
+    requests.post(BACKEND_ADDRESS + "/user/update_password", json=data)
+    return 'saved'
+
+
+@app.route('/api/admin/get_users')
+def get_users():
+    data = request.get_json()
+    req = requests.post(BACKEND_ADDRESS + "/user/get_users", json=data).json()
+    return req
+
+
 ################# T  E  S  T ##################
 
 
 @app.route('/api/bi')
 def get_bcrypt_str():
     password = request.args.get('pw')
-    bcrypt_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    bcrypt_pw = encrypt(password)
     
     return bcrypt_pw
 

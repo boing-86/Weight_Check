@@ -145,6 +145,45 @@ def get_user_info():
     return json.dumps({'password': password, 'is_admin': is_admin})
 
 
+# User Api
+@app.route('/user/make_user', methods=['POST'])
+def make_user():
+    data = request.get_json()
+    id = data['id']
+    name = data['name']
+    password = data['password']
+    admin = data['admin']
+    
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            f"INSERT INTO user "
+            f"VALUES ('{id}', '{name}', '{password}', {admin})")
+        mysql.commit()
+    return 'saved'
+
+
+@app.route('/user/update_password', methods=['POST'])
+def update_password():
+    data = request.get_json()
+    id = data['id']
+    password = data['password']
+    
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            f"UPDATE user SET user_password='{password}' WHERE user_id='{id}'")
+        mysql.commit()
+    return 'saved'
+
+
+@app.route('/user/get_users', methods=['POST'])
+def get_users():
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            f"SELECT user_id, user_name, is_admin FROM user")
+        users = cursor.fetchall()
+    return users
+
+
 ################# T  E  S  T ##################
 
 
