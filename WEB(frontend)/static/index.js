@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    UpdateWeight();
     UpdateProductInfo();
 });
 
@@ -19,13 +18,10 @@ function UpdateProductInfo() { // 실제 중량 가져 오기
             g_weight = response['weight'];
             g_barcode = response['barcode'];
 
-            UpdateWeight();
-            UpdateResult();
-            // if (!!g_weight && !!g_barcode)
-            //     UpdateExpectedWeight();
-
-            sleep(300)
-            UpdateProductInfo();
+            if (!!g_barcode) {
+                UpdateWeight();
+                //UpdateExpectedWeight();
+            }
         },
         error() {
             alert('You cannot bring the real weight.');
@@ -43,6 +39,7 @@ function UpdateExpectedWeight() { //예상 중량 보여 주기 GET
             exp_weight_max = response['max'];
 
             UpdateExpWeight();
+            UpdateResult();
             PostProductInfo();
         },
         error() {
@@ -86,9 +83,4 @@ function UpdateResult() {
         $result_box.css('color', 'green');
         $result_box.css('font-size', '9rem');
     }
-}
-
-function sleep(t) {
-    let time = Date.now() + t
-    while (Date.now() <= time) {}
 }

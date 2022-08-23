@@ -150,6 +150,16 @@ def get_user_info():
 
 
 # User Api
+@app.route('/user/has_id', methods=['POST'])
+def can_use_this_id():
+    user_id = request.get_json()['id']
+    
+    with mysql.cursor() as cursor:
+        cursor.execute(f"SELECT * FROM user WHERE user_id='{user_id}'")
+        data = cursor.fetchone()
+    return json.dumps({'can_use': len(data) == 0})
+
+
 @app.route('/user/make_user', methods=['POST'])
 def make_user():
     data = request.get_json()

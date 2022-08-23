@@ -22,6 +22,8 @@ app.secret_key = encrypt(str(random.random()))
 
 @app.route('/', methods=['GET'])
 def index():
+    if 'is_admin' in session:
+        return redirect('/admin')
     if 'user_id' in session:
         return redirect('/main')
     return redirect('login')
@@ -34,7 +36,7 @@ def page_main():
 
 @app.route('/admin', methods=['GET'])
 def page_admin():
-    return render_template('index.html')
+    return render_template('admin.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -80,7 +82,7 @@ def try_login(form):
 
 
 @app.route('/api/logout', methods=['POST'])
-def log_out():
+def logout():
     session.pop('user_id')
     if 'is_admin' in session:
         session.pop('is_admin')
@@ -104,7 +106,14 @@ def get_result():
 
 
 # User Api
-@app.route('/api/admin/make_user')
+@app.route('/api/admin/has_id', methods=['POST'])
+def can_use_this_id():
+    data = request.get_json()
+    req = requests.post(BACKEND_ADDRESS + "/user/has_id", json=data).json()
+    return req
+
+
+@app.route('/api/admin/make_user', methods=['POST'])
 def make_user():
     data = request.get_json()
     data['password'] = encrypt(data['password'])
@@ -112,7 +121,7 @@ def make_user():
     return 'saved'
 
 
-@app.route('/api/admin/update_password')
+@app.route('/api/admin/update_password', methods=['POST'])
 def update_password():
     data = request.get_json()
     data['password'] = encrypt(data['password'])
@@ -120,7 +129,7 @@ def update_password():
     return 'saved'
 
 
-@app.route('/api/admin/get_users')
+@app.route('/api/admin/get_users', methods=['POST'])
 def get_users():
     data = request.get_json()
     req = requests.post(BACKEND_ADDRESS + "/user/login_info", json=data).json()
