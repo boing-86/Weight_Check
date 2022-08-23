@@ -31,12 +31,24 @@ def index():
 
 @app.route('/main', methods=['GET'])
 def page_main():
-    return render_template('index.html')
+    if 'is_admin' in session:
+        return redirect('/admin')
+    if 'user_id' in session:
+        return render_template('index.html')
+    return redirect('/login')
+    
+    # return render_template('index.html')
 
 
 @app.route('/admin', methods=['GET'])
 def page_admin():
-    return render_template('admin.html')
+    if 'is_admin' in session:
+        return render_template('admin.html')
+    if 'user_id' in session:
+        return redirect('/main')
+    return redirect('/login')
+
+    # return render_template('admin.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -66,7 +78,7 @@ def try_login(form):
     if id_re.match(form['id']) is None or pw_re.match(form['pw']) is None:
         return False, False
     
-    data = requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': form['id']}).json()
+    data = requests.post(BACKEND_ADDRESS + "/user/login_info", json={'user_id': form['id']}).json()
     password = data['password']
     is_admin = data['is_admin']
     
@@ -106,26 +118,11 @@ def get_result():
 
 
 # User Api
-@app.route('/api/admin/has_id', methods=['POST'])
-def can_use_this_id():
-    data = request.get_json()
-    req = requests.post(BACKEND_ADDRESS + "/user/has_id", json=data).json()
-    return req
-
-
 @app.route('/api/admin/make_user', methods=['POST'])
 def make_user():
     data = request.get_json()
     data['password'] = encrypt(data['password'])
     requests.post(BACKEND_ADDRESS + "/user/make_user", json=data)
-    return 'saved'
-
-
-@app.route('/api/admin/update_password', methods=['POST'])
-def update_password():
-    data = request.get_json()
-    data['password'] = encrypt(data['password'])
-    requests.post(BACKEND_ADDRESS + "/user/update_password", json=data)
     return 'saved'
 
 

@@ -136,6 +136,15 @@ def get_error_list():
     return data
 
 
+@app.route('/analysis/time')
+def get_time_analysis():
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            f"SELECT * FROM product_error")
+        data = cursor.fetchall()
+    return data
+
+
 # Login Api
 @app.route('/user/login_info', methods=['POST'])
 def get_user_info():
@@ -144,46 +153,39 @@ def get_user_info():
     with mysql.cursor() as cursor:
         cursor.execute(
             f"SELECT user_password, is_admin FROM user WHERE user_id='{user_id}'")
-        password, is_admin = cursor.fetchone()
-    
+        data = cursor.fetchone()
+        
+        if data is None:
+            return json.dumps({'password': '', 'is_admin': 0})
+        password, is_admin = data
+        
     return json.dumps({'password': password, 'is_admin': is_admin})
 
 
 # User Api
-@app.route('/user/has_id', methods=['POST'])
-def can_use_this_id():
-    user_id = request.get_json()['id']
+@app.route('/user/make_user', methods=['POST'])
+def make_or_update_user():
+    data = request.get_json()
+    is_update, user_id, name, password, admin\
+        = (data[s] for s in ['is_update', 'id', 'name', 'password', 'is_admin'])
     
     with mysql.cursor() as cursor:
         cursor.execute(f"SELECT * FROM user WHERE user_id='{user_id}'")
         data = cursor.fetchone()
-    return json.dumps({'can_use': len(data) == 0})
-
-
-@app.route('/user/make_user', methods=['POST'])
-def make_user():
-    data = request.get_json()
-    user_id, name, password, admin\
-        = (data[s] for s in ['id', 'name', 'password', 'is_admin'])
-    
-    with mysql.cursor() as cursor:
-        cursor.execute(
-            f"INSERT INTO user "
-            f"VALUES ('{user_id}', '{name}', '{password}', {admin})")
-        mysql.commit()
-    return 'saved'
-
-
-@app.route('/user/update_password', methods=['POST'])
-def update_password():
-    data = request.get_json()
-    user_id, password = data['id'], data['password']
-    
-    with mysql.cursor() as cursor:
-        cursor.execute(
-            f"UPDATE user SET user_password='{password}' WHERE user_id='{user_id}'")
-        mysql.commit()
-    return 'saved'
+        
+        computed = False
+        if is_update and len(data) == 1:
+            cursor.execute(
+                f"UPDATE user SET user_password='{password}' WHERE user_id='{user_id}'")
+            computed = True
+        elif not is_update and len(data) == 0:
+            cursor.execute(
+                f"INSERT INTO user "
+                f"VALUES ('{user_id}', '{name}', '{password}', {admin})")
+            computed = True
+        
+        if computed: mysql.commit()
+    return json.dumps({'committed': computed})
 
 
 @app.route('/user/get_users', methods=['POST'])
