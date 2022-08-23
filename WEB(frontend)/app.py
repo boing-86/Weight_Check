@@ -1,8 +1,8 @@
 from flask import Flask, request, render_template, redirect, session
+from flask_jsonpify import jsonpify
 from datetime import datetime
 import requests
 import bcrypt
-import json
 import re
 
 
@@ -39,6 +39,7 @@ def get_weight():
     pw_re = re.compile('/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;')
     
     if id_re.match(user_id) == None or pw_re.match(user_pw) == None:
+        print(id_re.match(user_id), pw_re.match(user_pw))
         return redirect('/login', 302, {'error': "Wrong Id or Password form"})
 
     password = requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': user_id}).text
@@ -79,22 +80,23 @@ def get_bcrypt_str():
     
     return bcrypt_pw
 
-@app.route('/api')
+@app.route('/api/test1')
 def test():
     path = request.path
     host = request.host_url
     
     return {"path":path, "host": host}
 
-@app.route('/api/test')
+@app.route('/api/test2')
 def test2():
     return requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': "A00004689"}).text
 
-@app.route('/api/test3')
+@app.route('/real_weight2')
 def test3():
-    return json.dumps({'id':1234, 'weight':12342})
+    weight = 456789
+    p_id = None
+    return jsonpify({'weight': weight, 'barcode': p_id})
 
-if __name__ == "__main__":  # 웹사이트를 호스팅하여 접속자에게 보여주기 위한 부분
+if __name__ == "__main__":
    app.run(host="0.0.0.0", port = "5000")
-   # host는 현재 라즈베리파이의 내부 IP, port는 임의로 설정
-   # 해당 내부 IP와 port를 포트포워딩 해두면 외부에서도 접속가능
+   

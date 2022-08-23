@@ -1,19 +1,20 @@
 $(document).ready(function () {
-    UpdateProductInfoJsonp()
     UpdateWidgets();
+    UpdateProductInfo();
+    // UpdateProductInfoJsonp();
 });
 
 let g_weight = 0, g_barcode = 0;
 let exp_weight_min, exp_weight_max;
 
-// 기존 정보를 바탕 으로 한번에 업데이트 합니다.
+// 기존 정보를 바탕으로 UI를 한번에 업데이트 합니다.
 function UpdateWidgets() {
     if (!!g_weight)
         $('#real_weight').text(`${g_weight} kg`);
     else
         $('#real_weight').text(`측정 중`);
 
-    if (!!g_weight && !!g_barcode) { // exp_weight 값 존재할 때
+    if (typeof exp_weight_max === 'number') { // exp_weight 값 존재할 때
         $('#exp_weight').text(`${exp_weight_min} kg ~ ${exp_weight_max} kg`);
 
         let _result_box = $('#result_box');
@@ -33,7 +34,7 @@ function UpdateWidgets() {
     }
 }
 
-function UpdateProductInfo() { // 실제 중량 가져 오기
+function UpdateProductInfo() {
     $.ajax({
         type: 'GET',
         url: 'http://localhost:5000/real_weight',
@@ -42,8 +43,8 @@ function UpdateProductInfo() { // 실제 중량 가져 오기
             g_barcode = response['barcode'];
             g_weight = response['weight'];
 
-            if (!!g_weight && !!g_barcode)
-                UpdateExpectedWeight();
+            // if (!!g_barcode)
+            //     UpdateExpectedWeight();
             UpdateWidgets();
         },
         error() {
@@ -52,22 +53,24 @@ function UpdateProductInfo() { // 실제 중량 가져 오기
     });
 }
 
-function UpdateProductInfoJsonp() {
+function UpdateProductInfoJsonp() { // 실제 중량 가져 오기
     $.ajax({
         type: 'GET',
-        url: 'http://localhost:5000/api/test3',
+        url: 'http://localhost:5000/real_weight2',
         dataType: 'jsonp',
-        jsonpCallback: "myCallback",
+        jsonpCallback: "getInfo",
         success: (response) => {
             g_weight = response['weight'];
             g_barcode = response['barcode'];
 
-            if (!!g_weight && !!g_barcode)
-                UpdateExpectedWeight();
+            // if (!!g_weight && !!g_barcode)
+            //     UpdateExpectedWeight();
             UpdateWidgets();
         },
         error: function(xhr, status, error) {
-            console.log(status, error)
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
         }
     });
 }
@@ -86,7 +89,7 @@ function UpdateExpectedWeight() { //예상 중량 보여 주기 GET
         error() {
             alert('You cannot bring the exp weight.')
         }
-    })
+    });
 }
 
 function PostProductInfo() { //결과 보내 주기 GET
@@ -98,5 +101,5 @@ function PostProductInfo() { //결과 보내 주기 GET
         error() {
             alert('You cannot send info.')
         }
-    })
+    });
 }
