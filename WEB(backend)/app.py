@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 if not environ.get('KurlyCheckDbHost') and not environ.get('KurlyCheckDbPort') and\
         not environ.get('KurlyCheckDbUser') and not environ.get('KurlyCheckDbPswd'):
-    print("make environment variable for db server connection!")
+    print("\033[31mBackend(app.py) : make environment variable for db server connection!\033[0m")
 
 mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Endpoint
                         port=int(environ.get('KurlyCheckDbPort')),  # Endpoint Port
@@ -99,7 +99,7 @@ def counting_count():
     barcode_id = request.get_json()['id']
     
     zone = barcode_id[0] == 'P' and 'picking' or 'das'
-    z = barcode_id[0] == 'P' and 'p' or 'd'
+    z = zone[0]
     
     with mysql.cursor() as cursor:
         cursor.execute(
@@ -166,8 +166,8 @@ def get_user_info():
 @app.route('/user/make_user', methods=['POST'])
 def make_or_update_user():
     data = request.get_json()
-    is_update, user_id, name, password, admin\
-        = (data[s] for s in ['is_update', 'id', 'name', 'password', 'is_admin'])
+    is_update, user_id, name, password\
+        = (data[s] for s in ['is_update_give', 'id_give', 'name_give', 'password_give'])
     
     with mysql.cursor() as cursor:
         cursor.execute(f"SELECT * FROM user WHERE user_id='{user_id}'")
@@ -181,11 +181,11 @@ def make_or_update_user():
         elif not is_update and len(data) == 0:
             cursor.execute(
                 f"INSERT INTO user "
-                f"VALUES ('{user_id}', '{name}', '{password}', {admin})")
+                f"VALUES ('{user_id}', '{name}', '{password}', 0)")
             computed = True
         
         if computed: mysql.commit()
-    return json.dumps({'committed': computed})
+    return json.dumps({'saved': computed})
 
 
 @app.route('/user/get_users', methods=['POST'])
@@ -193,7 +193,8 @@ def get_users():
     with mysql.cursor() as cursor:
         cursor.execute("SELECT user_id, user_name, is_admin FROM user")
         users = cursor.fetchall()
-    return users
+        
+    return json.dumps({'user_list': users})
 
 
 ################# T  E  S  T ##################

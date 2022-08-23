@@ -4,6 +4,7 @@ from datetime import datetime
 import requests
 import random
 import bcrypt
+import json
 import re
 
 if not getenv('KurlyCheckBeHost') and not getenv('KurlyCheckBePort'):
@@ -61,6 +62,9 @@ def page_login():
         form['id'] = request.form['username']
         form['pw'] = request.form['password']
         is_login, is_admin = try_login(form)
+        
+    if not is_login and is_admin:
+        return json.dumps({'state': 'error', 'messege': '서버와의 연결이 끊겼습니다.'})
     
     if is_admin:
         return redirect('/admin')
@@ -78,7 +82,12 @@ def try_login(form):
     if id_re.match(form['id']) is None or pw_re.match(form['pw']) is None:
         return False, False
     
-    data = requests.post(BACKEND_ADDRESS + "/user/login_info", json={'user_id': form['id']}).json()
+    data = requests.post(BACKEND_ADDRESS + "/user/login_info", json={'user_id': form['id']})
+    
+    if data is None:
+        return False, True
+    
+    data = data.json()
     password = data['password']
     is_admin = data['is_admin']
     
@@ -114,7 +123,7 @@ def get_result():
     
     requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
     
-    return 'saved'
+    return json.dumps({'state': 'saved'})
 
 
 # User Api
@@ -123,14 +132,14 @@ def make_user():
     data = request.get_json()
     data['password'] = encrypt(data['password'])
     requests.post(BACKEND_ADDRESS + "/user/make_user", json=data)
-    return 'saved'
+    return json.dumps({'state': 'saved'})
 
 
 @app.route('/api/admin/get_users', methods=['GET'])
 def get_users():
     data = request.get_json()
-    req = requests.post(BACKEND_ADDRESS + "/user/login_info", json=data).json()
-    return req
+    req = requests.post(BACKEND_ADDRESS + "/user/get_users", json=data)
+    return req.json()
 
 
 ################# T  E  S  T ##################
@@ -142,16 +151,6 @@ def get_bcrypt_str():
     bcrypt_pw = encrypt(password)
     
     return bcrypt_pw
-
-
-@app.route('/api/test1')
-def test():
-    return {"path": request.path, "host": request.host_url}
-
-
-@app.route('/api/test2')
-def test2():
-    return requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': "A00004689"}).text
 
 
 if __name__ == "__main__":
