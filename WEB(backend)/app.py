@@ -44,9 +44,6 @@ def get_weight_mean_std():
                 f"SELECT product_list FROM customer_order WHERE order_id='{order_id}'")
             products_string = cursor.fetchone()[0]
  
-        products_string = products_string.replace("\'", "\"")
-        products_string = products_string.replace("“", "\"")
-        products_string = products_string.replace("”", "\"")
         products_json = json.loads(products_string)
 
         # 바구니 무게 더하기
@@ -81,13 +78,11 @@ def get_weight_sum():
 @app.route('/save/weight', methods=['POST'])
 def save_working_data():
     data = request.get_json()
-    user_id = data['user_key']
-    finish_time = data['finish_time']
-    real_weight = data['weight']
-    barcode_id = data['id']
+    user_id, finish_time, real_weight, barcode_id\
+        = (data[s] for s in ['user_key', 'finish_time', 'weight', 'id'])
     
     zone = barcode_id[0] == 'P' and 'picking' or 'das'
-    z = barcode_id[0] == 'P' and 'p' or 'd'
+    z = zone[0]
     
     with mysql.cursor() as cursor:
         cursor.execute(
@@ -101,8 +96,7 @@ def save_working_data():
 # 작업에 실패함
 @app.route('/counting', methods=['POST'])
 def counting_count():
-    data = request.get_json()
-    barcode_id = data['id']
+    barcode_id = request.get_json()['id']
     
     zone = barcode_id[0] == 'P' and 'picking' or 'das'
     z = barcode_id[0] == 'P' and 'p' or 'd'
@@ -111,7 +105,7 @@ def counting_count():
         cursor.execute(
             f"SELECT {z}_count FROM {zone}_product_basket WHERE {zone}_id='{barcode_id}'")
         count = cursor.fetchone()[0] + 1
-        print(count)
+        
         cursor.execute(
             f"UPDATE {zone}_product_basket SET {z}_count={count} WHERE {zone}_id='{barcode_id}'")
         mysql.commit()
@@ -122,8 +116,7 @@ def counting_count():
 @app.route('/update/force', methods=['POST'])
 def save_working_error():
     mean, std = get_weight_mean_std()
-    data = request.get_json()
-    barcode_id = data['id']
+    barcode_id = request.get_json()['id']
     
     with mysql.cursor() as cursor:
         cursor.execute(
@@ -133,7 +126,18 @@ def save_working_error():
     return "saved"
 
 
-@app.route('/get/userinfo', methods=['POST'])
+# error list api
+@app.route('/product/error_list')
+def get_error_list():
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            f"SELECT * FROM product_error")
+        data = cursor.fetchall()
+    return data
+
+
+# Login Api
+@app.route('/user/login_info', methods=['POST'])
 def get_user_info():
     user_id = request.get_json()['user_id']
     
@@ -149,15 +153,13 @@ def get_user_info():
 @app.route('/user/make_user', methods=['POST'])
 def make_user():
     data = request.get_json()
-    id = data['id']
-    name = data['name']
-    password = data['password']
-    admin = data['admin']
+    user_id, name, password, admin\
+        = (data[s] for s in ['id', 'name', 'password', 'is_admin'])
     
     with mysql.cursor() as cursor:
         cursor.execute(
             f"INSERT INTO user "
-            f"VALUES ('{id}', '{name}', '{password}', {admin})")
+            f"VALUES ('{user_id}', '{name}', '{password}', {admin})")
         mysql.commit()
     return 'saved'
 
@@ -165,12 +167,11 @@ def make_user():
 @app.route('/user/update_password', methods=['POST'])
 def update_password():
     data = request.get_json()
-    id = data['id']
-    password = data['password']
+    user_id, password = data['id'], data['password']
     
     with mysql.cursor() as cursor:
         cursor.execute(
-            f"UPDATE user SET user_password='{password}' WHERE user_id='{id}'")
+            f"UPDATE user SET user_password='{password}' WHERE user_id='{user_id}'")
         mysql.commit()
     return 'saved'
 
@@ -178,8 +179,7 @@ def update_password():
 @app.route('/user/get_users', methods=['POST'])
 def get_users():
     with mysql.cursor() as cursor:
-        cursor.execute(
-            f"SELECT user_id, user_name, is_admin FROM user")
+        cursor.execute("SELECT user_id, user_name, is_admin FROM user")
         users = cursor.fetchall()
     return users
 
@@ -189,9 +189,7 @@ def get_users():
 
 @app.route('/test/database', methods=['POST'])
 def get_test_product():
-    data = request.get_json()
-    barcode_id = data['id']
-    
+    barcode_id = request.get_json()['id']
     zone = barcode_id[0] == 'P' and 'picking' or 'das'
     
     with mysql.cursor() as cursor:
@@ -200,6 +198,35 @@ def get_test_product():
         print(products)
     
     return json.dumps({'list': products}, ensure_ascii=False)
+
+
+@app.route('/test/normalize_list', methods=['GET'])
+def normalize_list():
+    with mysql.cursor() as cursor:
+        cursor.execute(
+            f"SELECT order_id, product_list FROM customer_order")
+        products = cursor.fetchall()
+        
+        for order_id, product in products:
+            product = normalize(product)
+            cursor.execute(
+                f"UPDATE customer_order SET product_list='{product}' WHERE order_id='{order_id}'")
+
+        # asdasd
+        cursor.execute(
+            f"SELECT picking_id, product_list FROM picking_product_basket")
+        products = cursor.fetchall()
+
+        for picking_id, product in products:
+            product = normalize(product)
+            cursor.execute(
+                f"UPDATE picking_product_basket SET product_list='{product}' WHERE picking_id='{picking_id}'")
+        
+        mysql.commit()
+    return 'saved'
+    
+def normalize(lists):
+    return lists.replace("\'", "\"").replace("“", "\"").replace("”", "\"")
 
 
 @app.errorhandler(404)

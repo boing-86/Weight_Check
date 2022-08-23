@@ -123,7 +123,7 @@ def update_password():
 @app.route('/api/admin/get_users')
 def get_users():
     data = request.get_json()
-    req = requests.post(BACKEND_ADDRESS + "/user/get_users", json=data).json()
+    req = requests.post(BACKEND_ADDRESS + "/user/login_info", json=data).json()
     return req
 
 
