@@ -30,7 +30,7 @@ def home():
 @app.route('/enter', methods=['GET','POST'])
 def enter():
     if request.method == 'GET':
-        return render_template('index.html', weight = None, p_id = None)
+        return render_template('varcode.html', p_id = None)
 
     elif request.method == 'POST':
         val = hx.get_weight(5) / 1000
@@ -42,7 +42,7 @@ def enter():
         p_id = request.form['p_id']
         print("weight : ", weight)
         print("identity value : ", p_id)
-        return render_template('index.html', weight = weight, p_id = p_id)
+        return render_template('varcode.html', p_id = p_id)
 
 @app.route('/real_weight', methods=['GET'])
 @cross_origin(allow_headers=['Content-Type'])
