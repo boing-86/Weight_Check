@@ -1,7 +1,6 @@
 $(document).ready(function () {
     UpdateWidgets();
-    UpdateProductInfo();
-    // UpdateProductInfoJsonp();
+    UpdateProductInfoJsonp();
 });
 
 let g_weight = 0, g_barcode = 0;

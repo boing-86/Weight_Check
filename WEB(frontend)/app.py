@@ -22,34 +22,46 @@ def index():
 def page_main():
     return render_template('index.html')
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['GET', 'POST'])
 def page_login():
-    if 'user_id' in session:
-        return redirect('/main')
-    return render_template('login.html')
-
-###################### APIs ########################
-
-@app.route('/api/login', methods=['POST'])
-def get_weight():
-    user_id = request.form['username']
-    user_pw = request.form['password']
+    form = {'id': '', 'pw': ''}
     
-    id_re = re.compile('/^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;')
-    pw_re = re.compile('/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;')
+    if request.method == 'GET':
+        if 'user_id' in session:
+            return redirect('/main')
+        return render_template('login.html', form=form)
+    else:
+        form['id'] = request.form['username']
+        form['pw'] = request.form['password']
+        
+        if try_login(form):
+            return redirect('/main')
     
-    if id_re.match(user_id) == None or pw_re.match(user_pw) == None:
-        print(id_re.match(user_id), pw_re.match(user_pw))
-        return redirect('/login', 302, {'error': "Wrong Id or Password form"})
+    return render_template('login.html', form=form)
 
-    password = requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': user_id}).text
+def try_login(form):
+    print(form['id'], form['pw'])
+    
+    # 아이디: 영문, 숫자조합 5~19글자
+    # 비밀번: 영문, 숫자, 특수문자 조합 8~16글자
+    #정규식이 잘 안되네요 ㅎㅎ
+    id_re = re.compile('/^[A-Za-z]+[A-Za-z0-9]{5,19}$/g')
+    pw_re = re.compile('/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/')
+
+    print(id_re.match(form['id']), pw_re.match(form['pw']))
+    if id_re.match(form['id']) == None or pw_re.match(form['pw']) == None:
+        return False
+    
+    password = requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': form['id']}).text
     bcrypt_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     
-    if user_pw == bcrypt_pw:
-        session['user_id'] = user_id
-        return redirect('/main')
+    if form['pw'] == bcrypt_pw:
+        session['user_id'] = form['id']
+        return True
     
-    return redirect('/login', 302, {'error': "Wrong Password"})
+    return False
+
+###################### APIs ########################
 
 @app.route('/api/logout', methods=['POST'])
 def log_out():
@@ -98,5 +110,5 @@ def test3():
     return jsonpify({'weight': weight, 'barcode': p_id})
 
 if __name__ == "__main__":
-   app.run(host="0.0.0.0", port = "5000")
+   app.run()
    
