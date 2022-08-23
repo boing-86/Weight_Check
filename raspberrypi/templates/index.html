@@ -1,0 +1,40 @@
+<html>
+	<head> 
+	<title>RASPBERRY PI STATE VIEWER</title>	
+	<meta name="viewport" content="width=device-width initial-scale=1">
+	<!--update 1 time / 1 second-->
+	<!--meta http-equiv="refresh" content="1"-->
+	</head> 
+	<body>
+		<h1>value request web server page</h1>
+        <hr>
+        <form method="POST" action="/enter">
+            <div style="padding-left:20px;">
+                <h3>identity id</h3>
+                    <label for="p_id">enter the value</label>
+                    <input type="text" name="p_id">
+                    <div class="'button'">
+                        <button type="submit">Enter</button>
+                    </div>
+                <hr>
+            </div>
+        </form>
+        <h3>value status</h3>
+            <p>
+		    {% if p_id and weight %}
+		        <b>identity id: {{ p_id }}
+		        </b>
+	        </p>
+            	<b>weight: {{ weight }}
+            	</b>
+            <p>
+	        {% else %}
+                <b>identity id: please enter
+                </b>
+            </p>
+            <b>weight: {{ weight }}
+            </b>
+            {% endif %}
+        <hr>
+	</body>
+</html>
