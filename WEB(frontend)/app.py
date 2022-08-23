@@ -129,7 +129,7 @@ def update_password():
     return 'saved'
 
 
-@app.route('/api/admin/get_users', methods=['POST'])
+@app.route('/api/admin/get_users', methods=['GET'])
 def get_users():
     data = request.get_json()
     req = requests.post(BACKEND_ADDRESS + "/user/login_info", json=data).json()
