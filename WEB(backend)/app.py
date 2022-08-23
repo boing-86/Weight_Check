@@ -17,9 +17,11 @@ mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Endpoint
                         database='kdb',  # Schema Name
                         charset="utf8mb4")
 
+
 @app.route('/')
 def hello_world():
     return 'Hello Backend World!'
+
 
 # 물건 무게 평균, 표준편차 구하기
 def get_weight_mean_std():
@@ -63,6 +65,7 @@ def get_weight_mean_std():
         std = math.sqrt(std)
     return mean, std
 
+
 # 예상 상품 무게 불러오기
 @app.route('/weight', methods=['POST'])
 def get_weight_sum():
@@ -72,6 +75,7 @@ def get_weight_sum():
     max_weight = mean + 3*std
 
     return json.dumps({'min': min_weight, 'max': max_weight})
+
 
 # 작업을 성공적으로 마침
 @app.route('/save/weight', methods=['POST'])
@@ -93,6 +97,7 @@ def save_working_data():
     counting_count()
     return 'saved'
 
+
 # 작업에 실패함
 @app.route('/counting', methods=['POST'])
 def counting_count():
@@ -112,36 +117,36 @@ def counting_count():
         mysql.commit()
     return "saved"
 
+
 # 강제로 작업 완료를 함 (로그를 남김)
-# INSERT 구문이 오류가 납니다.
 @app.route('/update/force', methods=['POST'])
 def save_working_error():
     mean, std = get_weight_mean_std()
     data = request.get_json()
     barcode_id = data['id']
-    zone = barcode_id[0] == 'P' and 'picking' or 'das'
     
     with mysql.cursor() as cursor:
         cursor.execute(
-            f"INSERT INTO product_error (where , order_id, predict_avg, predict_std )"
-            f"VALUES ('{zone}', '{barcode_id}', {mean}, {std} )")
+            f"INSERT INTO product_error (order_id, predict_avg, predict_std)"
+            f"VALUES ('{barcode_id}', {mean}, {std})")
         mysql.commit()
     return "saved"
 
 
-@app.route('/get/password', methods=['POST'])
-def get_user_password():
+@app.route('/get/userinfo', methods=['POST'])
+def get_user_info():
     user_id = request.get_json()['user_id']
     
     with mysql.cursor() as cursor:
         cursor.execute(
-            f"SELECT user_password FROM user WHERE user_id='{user_id}'")
-        password = cursor.fetchone()[0]
+            f"SELECT user_password, is_admin FROM user WHERE user_id='{user_id}'")
+        password, is_admin = cursor.fetchone()
     
-    return json.dumps({'password': password})
+    return json.dumps({'password': password, 'is_admin': is_admin})
 
 
 ################# T  E  S  T ##################
+
 
 @app.route('/test/database', methods=['POST'])
 def get_test_product():
@@ -152,14 +157,16 @@ def get_test_product():
     
     with mysql.cursor() as cursor:
         cursor.execute(f"SELECT product_list FROM {zone}_product_basket WHERE {zone}_id='{barcode_id}'")
-        list = cursor.fetchone()[0]
-        print(list)
+        products = cursor.fetchone()[0]
+        print(products)
     
-    return json.dumps({'list': list}, ensure_ascii=False)
+    return json.dumps({'list': products}, ensure_ascii=False)
+
 
 @app.errorhandler(404)
 def error404():
     return "Not Found"
+
 
 if __name__ == '__main__':
     app.run()
