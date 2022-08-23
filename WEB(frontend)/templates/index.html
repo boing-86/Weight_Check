@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
     <title>MarketKurly Check System</title>
-    <link rel="icon" type="image/x-icon" href="kurly_icon_purple.png">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='kurly_icon_purple.png') }}">
 
 	<!--폰트-->
 	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 	<!--css 경로-->
 	<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 	<!--js 경로-->
-	<script src="{{ url_for('static', filename='index.js') }}"></script>
+	<!--script src="{{ url_for('static', filename='index.js') }}"></script!-->
 </head>
 <body>
 	<div class="wrapper login-wrap">
@@ -24,16 +24,16 @@
 				<div class="input-box">
 					<div class="inner-input">
 						<p>실제 중량</p>
-						<c id="real_weight">${}kg</c>
+						<p id="real_weight">${}kg</p>
 					</div>
 					<div class="inner-input">
 						<p>예상 중량</p>
-						<c id="exp_weight">${}kg</c>
+						<p id="exp_weight">${}kg</p>
 					</div>
 					<div class="result" >
 						<p>결과</p>
 						<div class="result-text">
-							<b id="result_box">PASS</b>
+							<p id="result_box">PASS</p>
 						</div>
 					</div>
 				</div>

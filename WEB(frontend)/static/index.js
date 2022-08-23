@@ -1,40 +1,64 @@
 $(document).ready(function () {
-    UpdateProductInfo();
+    //UpdateProductInfoJsonp()
+    UpdateWidgets();
 });
 
 let g_weight = 0, g_barcode = 0;
 let exp_weight_min, exp_weight_max;
 
+// 기존 정보를 바탕 으로 한번에 업데이트 합니다.
 function UpdateWidgets() {
     if (!!g_weight)
-        $('#real_weight').innerText = `${g_weight} kg`;
+        $('#real_weight').text(`${g_weight} kg`);
     else
-        $('#real_weight').innerText = `측정 중`;
+        $('#real_weight').text(`측정 중`);
 
     if (!!g_weight && !!g_barcode) { // exp_weight 값 존재할 때
-        $('#exp_weight').innerText = `${exp_weight_min} kg ~ ${exp_weight_max} kg`;
+        $('#exp_weight').text(`${exp_weight_min} kg ~ ${exp_weight_max} kg`);
 
+        let _result_box = $('#result_box');
         if (g_weight < exp_weight_min)
-            $('#result_box').innerText = `${g_weight-exp_weight_min} kg이 부족합니다.`;
+            _result_box.text(`${g_weight - exp_weight_min} kg이 부족합니다.`);
         else if (g_weight > exp_weight_max)
-            $('#result_box').innerText = `${exp_weight_max-g_weight} kg이 초과합니다.`;
+            _result_box.text(`${exp_weight_max - g_weight} kg이 초과합니다.`);
         else {
-            $('#result_box').innerText = 'PASS';
-            $('#result_box').css('color', 'green');
+            _result_box.text('PASS');
+            _result_box.css('color', 'green');
         }
-        $('#result_box').css('color', 'red');
+        _result_box.css('color', 'red');
     }
     else {
-        $('#result_box').innerText = "";
+        $('#result_box').text('');
+        $('#exp_weight').text('바코드를 찍어주세요')
     }
 }
 
 function UpdateProductInfo() { // 실제 중량 가져 오기
     $.ajax({
-        type: 'POST',
-        url: 'https://localhost:5000/real_weight',
+        type: 'GET',
+        url: 'http://localhost:5000/real_weight',
         data: {},
         success(response) {
+            g_barcode = response['barcode'];
+            g_weight = response['weight'];
+
+            if (!!g_weight && !!g_barcode)
+                UpdateExpectedWeight();
+            UpdateWidgets();
+        },
+        error() {
+            alert('You cannot bring the real weight.');
+        }
+    });
+}
+
+function UpdateProductInfoJsonp() {
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:5000/api/test3',
+        dataType: 'jsonp',
+        jsonpCallback: "myCallback",
+        success: (response) => {
             g_weight = response['weight'];
             g_barcode = response['barcode'];
 
@@ -42,8 +66,8 @@ function UpdateProductInfo() { // 실제 중량 가져 오기
                 UpdateExpectedWeight();
             UpdateWidgets();
         },
-        error() {
-            alert('실제 중량을 가져올 수 없습니다.');
+        error: function(xhr, status, error) {
+            console.log(status, error)
         }
     });
 }
@@ -60,7 +84,7 @@ function UpdateExpectedWeight() { //예상 중량 보여 주기 GET
             PostProductInfo();
         },
         error() {
-            alert('예측 중량을 가져올 수 없습니다.')
+            alert('You cannot bring the exp weight.')
         }
     })
 }
@@ -72,7 +96,7 @@ function PostProductInfo() { //결과 보내 주기 GET
         data: {"id": g_barcode, "weight": g_weight},
         success(response) {},
         error() {
-            alert('결과를 보낼 수 없습니다.')
+            alert('You cannot send info.')
         }
     })
 }

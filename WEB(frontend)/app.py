@@ -34,11 +34,12 @@ def page_login():
 def get_weight():
     user_id = request.form['username']
     user_pw = request.form['password']
+    
     id_re = re.compile('/^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;')
     pw_re = re.compile('/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;')
     
     if id_re.match(user_id) == None or pw_re.match(user_pw) == None:
-        return json.dumps({'error': "아이디 또는 비밀번호 형식이 다릅니다."})
+        return redirect('/login', 302, {'error': "Wrong Id or Password form"})
 
     password = requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': user_id}).text
     bcrypt_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -47,7 +48,7 @@ def get_weight():
         session['user_id'] = user_id
         return redirect('/main')
     
-    return json.dumps({'error': "비밀번호가 다릅니다."})
+    return redirect('/login', 302, {'error': "Wrong Password"})
 
 @app.route('/api/logout', methods=['POST'])
 def log_out():
@@ -85,7 +86,13 @@ def test():
     
     return {"path":path, "host": host}
 
+@app.route('/api/test')
+def test2():
+    return requests.post(BACKEND_ADDRESS + "/get/password", json={'user_id': "A00004689"}).text
 
+# @app.route('/api/test3')
+# def test3():
+#     return
 
 if __name__ == "__main__":  # 웹사이트를 호스팅하여 접속자에게 보여주기 위한 부분
    app.run(host="0.0.0.0", port = "5000")

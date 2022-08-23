@@ -6,6 +6,7 @@ import math
 
 app = Flask(__name__)
 # mysql 연결 하기
+print (environ.get('KurlyCheckDbHost'))
 mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Endpoint
                         port=int(environ.get('KurlyCheckDbPort')),  # Endpoint Port
                         user=environ.get('KurlyCheckDbUser'),
