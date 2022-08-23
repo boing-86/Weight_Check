@@ -1,0 +1,3 @@
+[console_scripts]
+j=j.__init__:main
+
