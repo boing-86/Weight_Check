@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>MarketKurly Admin Page</title>
+    <!--css 파일 위치-->
+    <!--폰트-->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
+    <!--pyscript-->
+    <!--    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css"/>-->
+    <!--    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>}-->
+    <!--bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <!---->
+
+    <style>
+        * {
+            font-family: 'IBM Plex Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: #532472;
+        }
+
+        button {
+            border: 1px solid #ffffff;
+            outline: none;
+            color: white;
+            background-color: transparent;
+        }
+
+        .container {
+            display: grid;
+            grid-gap: 2vh;
+            grid-template-rows: 1fr 3fr 2fr;
+            grid-template-columns: 1fr 3fr 2fr ;
+            height: 100vh;
+            grid-template-areas: 'header header header'
+                                'menu picking user'
+                                'menu picking box';
+        }
+
+        .container div {
+            border-radius: 10px;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .header {
+            grid-area: header;
+            margin: 1vh auto;
+            color: white;
+            background-color: #532472;
+            border: 1px solid #ffffff;
+        }
+
+        .menu {
+            grid-area: menu;
+            background-color: #ffffff;
+        }
+
+        .picking {
+            grid-area: picking;
+            background-color: #ffffff;
+        }
+        .user {
+            grid-area: user;
+            background-color: #ffffff;
+        }
+        .box {
+            grid-area: box;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>MarketKurly Check System Admin Page</h1>
+        <button type="button" onclick="logout()">로그아웃</button>
+    </div>
+    <div class="menu">
+        div 1
+    </div>
+    <div class="picking">
+        <h2>오피킹률</h2>
+    </div>
+    <div class="user">
+        <h2>사용자 계정 만들기</h2>
+    </div>
+    <div class="box">
+        div4
+    </div>
+</div>
+</body>
+</body>
+</html>

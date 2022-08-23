@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <title>MarketKurly Check System</title>
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <!--update 1 time / 1 second-->
+    <!--meta http-equiv="refresh" content="1"-->
+    <!--폰트-->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
+</head>
+<style>
+    * {
+        font-family: 'IBM Plex Sans KR', sans-serif;
+    }
+    body {
+        background: rgba(83, 36, 114, 1);
+    }
+    .inner {
+        background: rgba(83, 36, 114, 1);
+        padding: 1rem;
+    }
+    .inner .header h1 {
+        width: 100%;
+        color: #ffffff;
+        font-size: 2rem;
+        text-align: center;
+    }
+    .inner .input-box {
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 30px;
+    }
+
+    .inner .input-box p {
+        font-size: 1rem;
+        text-align: center;
+        color: rgba(83, 36, 114, 1);
+    }
+
+    .inner .input-box input {
+        width: 80%;
+        height: 2rem;
+        border: 1px solid rgba(83, 36, 114, 1);
+        border-radius: 10px;
+        align-items: center;
+        padding: 0 1rem;
+        display:block;
+        margin: auto;
+    }
+
+    .inner .input-box button {
+        border: none;
+        background-color: #532472;
+        color: #ffffff;
+        width: 100px;
+        height: 2rem;
+        border-radius: 10px;
+        display:block;
+        margin: auto;
+        margin-top: 10px;
+    }
+</style>
+<body>
+<div class="wrapper login-wrap">
+    <div class="inner">
+        <div class="header">
+            <h1>피킹존</h1>
+        </div>
+        <div class="input-box">
+            <form method="POST" action="/enter">
+                <p>바코드 값을 입력해 주세요</p>
+                <input name="p_id">
+                <div class="button">
+                    <button type="submit">Enter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
