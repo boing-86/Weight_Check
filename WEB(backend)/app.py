@@ -140,12 +140,12 @@ def get_error_list():
 @app.route('/user/login_info', methods=['POST'])
 def get_user_info():
     user_id = request.get_json()['user_id']
-    
+    print(user_id)    
     with mysql.cursor() as cursor:
         cursor.execute(
             f"SELECT user_password, is_admin FROM user WHERE user_id='{user_id}'")
         password, is_admin = cursor.fetchone()
-    
+    print(password, is_admin)    
     return json.dumps({'password': password, 'is_admin': is_admin})
 
 
