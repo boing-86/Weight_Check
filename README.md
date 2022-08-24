@@ -3,8 +3,8 @@
 <br>
 본 서비스는 물류 작업자를 위한 오발송 검수 시스템으로, 가우스 분포로 상품 미출/추가오류 등을 분류하여 저비용으로 운용 가능한 효율적인 검수 서비스를 제공합니다.
 <br>
-<li>배포 주소: www.kurlycheck.shop </li>
 <br>
+<li>배포 주소: www.kurlycheck.shop </li>
 <li>시연 영상: https://www.youtube.com/watch?v=FvDIk1UeYLE</li>
 <br><img width="874" alt="스크린샷 2022-08-24 오후 5 42 19" src="https://user-images.githubusercontent.com/104447529/186372648-a5280733-4646-471b-82d2-8f6671934be4.png">
 
