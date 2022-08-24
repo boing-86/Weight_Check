@@ -9,6 +9,7 @@
     - 테스트용 아이디 : A00004689
     - 테스트용 비밀번호 : @test1234
 - 시연 영상: https://www.youtube.com/watch?v=FvDIk1UeYLE
+<br>
 <br><img width="874" alt="스크린샷 2022-08-24 오후 5 42 19" src="https://user-images.githubusercontent.com/104447529/186372648-a5280733-4646-471b-82d2-8f6671934be4.png">
 <br><img width="871" alt="스크린샷 2022-08-24 오후 5 48 04" src="https://user-images.githubusercontent.com/104447529/186373946-533b26be-c0d1-44b3-b9c7-78359c8bd400.png">
 
