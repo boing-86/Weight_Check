@@ -71,7 +71,7 @@ def get_weight_sum():
     
     min_weight = mean - 3*std
     max_weight = mean + 3*std
-
+    
     return json.dumps({'min': min_weight, 'max': max_weight})
 
 
@@ -139,15 +139,23 @@ def get_error_list():
 # Analysis Product Picking/Das Error Counts
 @app.route('/analysis/time', methods=['GET'])
 def get_time_analysis():
+    date = request.get_json()['date']
+    
     with mysql.cursor() as cursor:
         cursor.execute(
-            "SELECT DATE_FORMAT(p_finish_time, '%H'), sum(p_count) FROM picking_product_basket WHERE user_id IS NOT NULL GROUP BY DATE_FORMAT(p_finish_time, '%H') WITH ROLLUP")
+            f"SELECT DATE_FORMAT(p_finish_time, '%H'), sum(p_count) FROM picking_product_basket "
+            f"WHERE user_id IS NOT NULL AND p_finish_time IS NOT NULL AND DATE(post_date)='{date}'"
+            f"GROUP BY DATE_FORMAT(p_finish_time, '%H') WITH ROLLUP"
+            f"")
         data = cursor.fetchall()
-    return json.dumps({'data': data})
+        
+    return json.dumps({'column': ('time', 'count'), 'data': data})
 
 
 @app.route('/analysis/user', methods=['GET'])
 def get_user_analysis():
+    date = request.get_json()['date']
+    
     with mysql.cursor() as cursor:
         cursor.execute("SELECT user_id, sum(p_count) FROM picking_product_basket WHERE user_id IS NOT NULL GROUP BY user_id WITH ROLLUP")
         users = cursor.fetchall()
@@ -208,6 +216,11 @@ def get_users():
     return json.dumps({'user_list': users})
 
 
+@app.errorhandler(404)
+def error404():
+    return "Not Found"
+
+
 ################# T  E  S  T ##################
 
 
@@ -251,11 +264,6 @@ def normalize_list():
     
 def normalize(lists):
     return lists.replace("\'", "\"").replace("“", "\"").replace("”", "\"")
-
-
-@app.errorhandler(404)
-def error404():
-    return "Not Found"
 
 
 ################# GENERATOR ##################

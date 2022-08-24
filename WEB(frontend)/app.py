@@ -113,20 +113,20 @@ def logout():
     return redirect('/login')
 
 
-@app.route('/api/main/exp_weight')
+@app.route('/api/main/exp_weight', method=['POST'])
 def get_exp_weight():
     return requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json()).json()
 
 
-@app.route('/api/main/result')
+@app.route('/api/main/result', method=['POST'])
 def get_result():
     data = request.get_json()
     data['user_key'] = session['user_id']
     data['finish_time'] = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     
-    requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
+    req = requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
     
-    return json.dumps({'state': 'saved'})
+    return req.json()
 
 
 # User Api
