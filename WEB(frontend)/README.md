@@ -33,7 +33,7 @@ setx KurlyCheckBeHost 0.0.0.0
 setx KurlyCheckBePort 7778
 ```
 
-### Bash/Ubunto
+### Bash/Ubuntu
 ```shell
 export KurlyCheckBeHost=0.0.0.0
 export KurlyCheckBePort=7778

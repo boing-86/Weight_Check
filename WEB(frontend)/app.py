@@ -1,12 +1,11 @@
 from flask import Flask, request, render_template, redirect, session
-from os import getenv
 from datetime import datetime
+from os import getenv
+import hashlib
 import requests
 import random
-import bcrypt
 import json
 import re
-import hashlib
 
 if not getenv('KurlyCheckBeHost') and not getenv('KurlyCheckBePort'):
     print("\033[31mFrontend(app.py) : make environment variable for BE server connection!\033[0m")
@@ -15,7 +14,7 @@ BACKEND_ADDRESS = f"http://{getenv('KurlyCheckBeHost')}:{getenv('KurlyCheckBePor
 
 
 def encrypt(password):
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return hashlib.md5(password.encode()).hexdigest()
 
 
 app = Flask(__name__)
@@ -37,7 +36,7 @@ def page_main():
         return redirect('/admin')
     if 'user_id' in session:
         return render_template('index.html')
-   # return redirect('/login')
+    # return redirect('/login')
     
     return render_template('index.html')
 
@@ -48,8 +47,8 @@ def page_admin():
         return render_template('admin.html')
     if 'user_id' in session:
         return redirect('/main')
-    #return redirect('/login')
-
+    # return redirect('/login')
+    
     return render_template('admin.html')
 
 
@@ -63,7 +62,7 @@ def page_login():
         form['id'] = request.form['username']
         form['pw'] = request.form['password']
         is_login, is_admin = try_login(form)
-        
+    
     if not is_login and is_admin:
         return json.dumps({'state': 'error', 'messege': '서버와의 연결이 끊겼습니다.'})
     
@@ -83,7 +82,7 @@ def try_login(form):
     if id_re.match(form['id']) is None or pw_re.match(form['pw']) is None:
         return False, False
     
-    data = requests.post("http://172.31.37.164:5000/user/login_info", json={'user_id': form['id']})
+    data = requests.post(BACKEND_ADDRESS + "/user/login_info", json={'user_id': form['id']})
     
     if data is None:
         return False, True
@@ -91,13 +90,12 @@ def try_login(form):
     data = data.json()
     password = data['password']
     is_admin = data['is_admin']
-    print("happy", data," : ", data['password'])
+    print("happy", data, " : ", data['password'])
 
-    #bcrypt_pw = encrypt(password).decode('utf-8')
-    bcrypt_pw = hashlib.md5(form['pw'].encode()).hexdigest()
-    print('ttt', form['pw'],' : ', bcrypt_pw)
-    
-    print('ttt',password,' : ' ,bcrypt_pw) 
+    bcrypt_pw = encrypt(form['pw'])
+    # print('ttt', form['pw'], ' : ', bcrypt_pw)
+    #
+    # print('ttt', password, ' : ', bcrypt_pw)
     if password == bcrypt_pw:
         session['user_id'] = form['id']
         return True, bool(is_admin)
@@ -117,16 +115,16 @@ def logout():
 
 @app.route('/api/main/exp_weight')
 def get_exp_weight():
-    return requests.post("http://172.31.37.164:5000/weight", json=request.get_json()).json()
+    return requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json()).json()
 
 
 @app.route('/api/main/result')
 def get_result():
     data = request.get_json()
     data['user_key'] = session['user_id']
-    data['finish_time'] = datetime.now().strftime('%Y %m %d %H %M %S')
+    data['finish_time'] = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     
-    requests.post("http://172.31.37.164:5000/save/weight", json=data)
+    requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
     
     return json.dumps({'state': 'saved'})
 
@@ -136,14 +134,14 @@ def get_result():
 def make_user():
     data = request.get_json()
     data['password'] = encrypt(data['password'])
-    requests.post("http://172.31.37.164:5000/user/make_user", json=data)
+    requests.post(BACKEND_ADDRESS + "/user/make_user", json=data)
     return json.dumps({'state': 'saved'})
 
 
 @app.route('/api/admin/get_users', methods=['GET'])
 def get_users():
     data = request.get_json()
-    req = requests.post("http://172.31.37.164:5000/user/get_users", json=data)
+    req = requests.post(BACKEND_ADDRESS + "/user/get_users", json=data)
     return req.json()
 
 

@@ -1,5 +1,6 @@
 from flask import Flask, request
 from os import environ
+import random
 import pymysql
 import json
 import math
@@ -127,22 +128,31 @@ def save_working_error():
 
 
 # error list api
-@app.route('/product/error_list')
+@app.route('/product/error_list', methods=['GET'])
 def get_error_list():
     with mysql.cursor() as cursor:
-        cursor.execute(
-            f"SELECT * FROM product_error")
+        cursor.execute("SELECT * FROM product_error")
         data = cursor.fetchall()
-    return data
+    return json.dumps({'data': data})
 
 
-@app.route('/analysis/time')
+# Analysis Product Picking/Das Error Counts
+@app.route('/analysis/time', methods=['GET'])
 def get_time_analysis():
     with mysql.cursor() as cursor:
         cursor.execute(
-            f"SELECT * FROM product_error")
+            "SELECT DATE_FORMAT(p_finish_time, '%H'), sum(p_count) FROM picking_product_basket WHERE user_id IS NOT NULL GROUP BY DATE_FORMAT(p_finish_time, '%H') WITH ROLLUP")
         data = cursor.fetchall()
-    return data
+    return json.dumps({'data': data})
+
+
+@app.route('/analysis/user', methods=['GET'])
+def get_user_analysis():
+    with mysql.cursor() as cursor:
+        cursor.execute("SELECT user_id, sum(p_count) FROM picking_product_basket WHERE user_id IS NOT NULL GROUP BY user_id WITH ROLLUP")
+        users = cursor.fetchall()
+    
+    return json.dumps({'data': users})
 
 
 # Login Api
@@ -157,8 +167,9 @@ def get_user_info():
         
         if data is None:
             return json.dumps({'password': '', 'is_admin': 0})
-        password, is_admin = data
+        password, is_admin = cursor.fetchone()
         
+    print(password, is_admin)
     return json.dumps({'password': password, 'is_admin': is_admin})
 
 
@@ -178,7 +189,7 @@ def make_or_update_user():
             cursor.execute(
                 f"UPDATE user SET user_password='{password}' WHERE user_id='{user_id}'")
             computed = True
-        elif not is_update and len(data) == 0:
+        elif not is_update and data is None:
             cursor.execute(
                 f"INSERT INTO user "
                 f"VALUES ('{user_id}', '{name}', '{password}', 0)")
@@ -245,6 +256,43 @@ def normalize(lists):
 @app.errorhandler(404)
 def error404():
     return "Not Found"
+
+
+################# GENERATOR ##################
+
+
+def getQ(query):
+    with mysql.cursor() as cursor:
+        cursor.execute(query)
+        return cursor.fetchall()
+
+
+#@app.route("/gen/test1")
+def test1_generator():
+    target = "picking_product_basket"
+    products = [data[0] for data in getQ("SELECT product_id FROM product")]
+    users = [data[0] for data in getQ("SELECT user_id FROM user")]
+
+    with mysql.cursor() as cursor:
+        for i in range(3, 13):
+            h = random.randint(0, 23)
+            m = random.randint(0, 59)
+            s = random.randint(0, 59)
+            
+            product_list = '{"%s":%d}' %(products[random.randint(0, len(products)-1)], random.randint(1, 20))
+            user_id = users[random.randint(0, len(users)-1)]
+            finish_time = '2022/08/24 %d:%d:%d' %(h, m, s)
+            real_weight = random.randrange(0, 100)
+            p_count = random.randint(1, 10)
+            
+            print(user_id, product_list, finish_time, real_weight, p_count)
+            
+            cursor.execute(
+                "INSERT INTO %s VALUES ('P%05d', '%s', 'PB001', '%s', '%s', %lf, %d, 1)"
+                %(target, i, product_list, user_id, finish_time, real_weight, p_count))
+        mysql.commit()
+        
+    return 'saved'
 
 
 if __name__ == '__main__':

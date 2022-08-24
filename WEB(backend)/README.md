@@ -40,7 +40,7 @@ setx KurlyCheckDbUser admin
 setx KurlyCheckDbPswd *******
 ```
 
-### Bash/Ubunto
+### Bash/Ubuntu
 ```shell
 export KurlyCheckDbHost=0.0.0.0
 export KurlyCheckDbPort=7778

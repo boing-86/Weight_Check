@@ -20,7 +20,7 @@ function UpdateProductInfo() { // 실제 중량 가져 오기
 
             if (!!g_barcode) {
                 UpdateWeight();
-                //UpdateExpectedWeight();
+                UpdateExpectedWeight();
             }
         },
         error() {
