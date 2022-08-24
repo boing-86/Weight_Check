@@ -5,7 +5,7 @@
 <br>
 <br>
 <li>배포 주소: www.kurlycheck.shop </li>
-- 테스트용 아이디: A00004689</li>
+- 테스트용 아이디: A00004689
 <li>테스트용 비밀번호: @test1234</li>
 <li>시연 영상: https://www.youtube.com/watch?v=FvDIk1UeYLE</li>
 <br><img width="874" alt="스크린샷 2022-08-24 오후 5 42 19" src="https://user-images.githubusercontent.com/104447529/186372648-a5280733-4646-471b-82d2-8f6671934be4.png">
