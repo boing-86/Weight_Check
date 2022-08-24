@@ -153,17 +153,12 @@ def get_user_info():
     with mysql.cursor() as cursor:
         cursor.execute(
             f"SELECT user_password, is_admin FROM user WHERE user_id='{user_id}'")
-<<<<<<< HEAD
         data = cursor.fetchone()
         
         if data is None:
             return json.dumps({'password': '', 'is_admin': 0})
         password, is_admin = data
         
-=======
-        password, is_admin = cursor.fetchone()
-    print(password, is_admin)    
->>>>>>> 695a00a3b86c246026cb003660389e393b8555e3
     return json.dumps({'password': password, 'is_admin': is_admin})
 
 
@@ -253,4 +248,4 @@ def error404():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
