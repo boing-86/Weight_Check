@@ -7,8 +7,10 @@ import math
 
 app = Flask(__name__)
 
-if not environ.get('KurlyCheckDbHost') and not environ.get('KurlyCheckDbPort') and\
-        not environ.get('KurlyCheckDbUser') and not environ.get('KurlyCheckDbPswd'):
+if  not environ.get('KurlyCheckDbHost') and\
+    not environ.get('KurlyCheckDbPort') and\
+    not environ.get('KurlyCheckDbUser') and\
+    not environ.get('KurlyCheckDbPswd'):
     print("\033[31mBackend(app.py) : make environment variable for db server connection!\033[0m")
 
 mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Endpoint
@@ -273,7 +275,7 @@ def getQ(query):
         return cursor.fetchall()
 
 
-#@app.route("/gen/test1")
+@app.route("/gen/test1")
 def test1_generator():
     target = "picking_product_basket"
     products = [data[0] for data in getQ("SELECT product_id FROM product")]

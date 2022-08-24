@@ -123,13 +123,13 @@ def get_users():
 
 
 # Weight Calc Api
-@app.route('/api/main/exp_weight', method=['POST'])
-def get_exp_weight():
+@app.route('/api/main/exp_weight', methods=['POST'])
+def get_exp_weights():
     req = requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json())
     return req.json()
 
 
-@app.route('/api/main/result', method=['POST'])
+@app.route('/api/main/result', methods=['POST'])
 def save_working_data():
     data = request.get_json()
     data['user_key'] = session['user_id']
@@ -140,13 +140,13 @@ def save_working_data():
 
 
 # Analyzer Api
-@app.route('/api/admin/analysis/time', method=['GET'])
+@app.route('/api/admin/analysis/time', methods=['GET'])
 def get_time_analysis():
     req = requests.get(BACKEND_ADDRESS + "/analysis/time", json=request.get_json())
     return req.json()
 
 
-@app.route('/api/admin/analysis/user', method=['GET'])
+@app.route('/api/admin/analysis/user', methods=['GET'])
 def get_user_analysis():
     req = requests.get(BACKEND_ADDRESS + "/analysis/user", json=request.get_json())
     return req.json()
