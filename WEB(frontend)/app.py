@@ -36,9 +36,7 @@ def page_main():
         return redirect('/admin')
     if 'user_id' in session:
         return render_template('index.html')
-    # return redirect('/login')
-    
-    return render_template('index.html')
+    return redirect('/login')
 
 
 @app.route('/admin', methods=['GET'])
@@ -47,9 +45,7 @@ def page_admin():
         return render_template('admin.html')
     if 'user_id' in session:
         return redirect('/main')
-    # return redirect('/login')
-    
-    return render_template('admin.html')
+    return redirect('/login')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,13 +86,10 @@ def try_login(form):
     data = data.json()
     password = data['password']
     is_admin = data['is_admin']
-    print("happy", data, " : ", data['password'])
 
-    bcrypt_pw = encrypt(form['pw'])
-    # print('ttt', form['pw'], ' : ', bcrypt_pw)
-    #
-    # print('ttt', password, ' : ', bcrypt_pw)
-    if password == bcrypt_pw:
+    encryption = encrypt(form['pw'])
+
+    if password == encryption:
         session['user_id'] = form['id']
         return True, bool(is_admin)
     return False, False
@@ -115,7 +108,8 @@ def logout():
 
 @app.route('/api/main/exp_weight', method=['POST'])
 def get_exp_weight():
-    return requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json()).json()
+    req = requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json())
+    return req.json()
 
 
 @app.route('/api/main/result', method=['POST'])
@@ -125,7 +119,6 @@ def get_result():
     data['finish_time'] = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     
     req = requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
-    
     return req.json()
 
 
@@ -134,14 +127,14 @@ def get_result():
 def make_user():
     data = request.get_json()
     data['password'] = encrypt(data['password'])
+    
     requests.post(BACKEND_ADDRESS + "/user/make_user", json=data)
     return json.dumps({'state': 'saved'})
 
 
 @app.route('/api/admin/get_users', methods=['GET'])
 def get_users():
-    data = request.get_json()
-    req = requests.post(BACKEND_ADDRESS + "/user/get_users", json=data)
+    req = requests.post(BACKEND_ADDRESS + "/user/get_users", json=request.get_json())
     return req.json()
 
 

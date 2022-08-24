@@ -35,22 +35,20 @@ def get_weight_mean_std():
         if is_picking_zone:
             cursor.execute(
                 f"SELECT product_list, basket_id FROM picking_product_basket WHERE picking_id='{barcode_id}'")
-            products_string, basket_id = cursor.fetchone()
         else:
             cursor.execute(
-                f"SELECT order_id, basket_id FROM das_product_basket WHERE das_id='{barcode_id}'")
-            order_id, basket_id = cursor.fetchone()
-            
-            cursor.execute(
-                f"SELECT product_list FROM customer_order WHERE order_id='{order_id}'")
-            products_string = cursor.fetchone()[0]
- 
+                f"SELECT product_list, basket_id "
+                f"FROM das_product_basket db join customer_order co on db.order_id = co.order_id "
+                f"WHERE das_id='{barcode_id}'")
+        
+        products_string, basket_id = cursor.fetchone()
         products_json = json.loads(products_string)
 
         # 바구니 무게 더하기
         cursor.execute(
             f"SELECT b_weight_avg, b_weight_std FROM basket WHERE basket_id='{basket_id}'")
         mean, std = cursor.fetchone()
+        std *= std
         
         # DB 에서 상품 평균, 표준 편차 구하기
         for name, count in products_json.items():
@@ -90,13 +88,13 @@ def save_working_data():
             f"UPDATE {zone}_product_basket SET user_id='{user_id}', {z}_finish_time='{finish_time}',"
             f" {z}_real_weight={real_weight}, {z}_finish=true WHERE {zone}_id='{barcode_id}'")
         
-    counting_count()
+    working_fail()
     return 'saved'
 
 
 # 작업에 실패함
-@app.route('/counting', methods=['POST'])
-def counting_count():
+@app.route('/working_fail', methods=['POST'])
+def working_fail():
     barcode_id = request.get_json()['id']
     
     zone = barcode_id[0] == 'P' and 'picking' or 'das'
@@ -104,11 +102,7 @@ def counting_count():
     
     with mysql.cursor() as cursor:
         cursor.execute(
-            f"SELECT {z}_count FROM {zone}_product_basket WHERE {zone}_id='{barcode_id}'")
-        count = cursor.fetchone()[0] + 1
-        
-        cursor.execute(
-            f"UPDATE {zone}_product_basket SET {z}_count={count} WHERE {zone}_id='{barcode_id}'")
+            f"UPDATE {zone}_product_basket SET {z}_count={z}_count+1 WHERE {zone}_id='{barcode_id}'")
         mysql.commit()
     return "saved"
 
@@ -133,7 +127,7 @@ def get_error_list():
     with mysql.cursor() as cursor:
         cursor.execute("SELECT * FROM product_error")
         data = cursor.fetchall()
-    return json.dumps({'data': data})
+    return json.dumps({'column': ('id', 'order_id', 'predict_avg', 'predict_std'), 'data': data})
 
 
 # Analysis Product Picking/Das Error Counts
@@ -143,13 +137,13 @@ def get_time_analysis():
     
     with mysql.cursor() as cursor:
         cursor.execute(
-            f"SELECT DATE_FORMAT(p_finish_time, '%H'), sum(p_count) FROM picking_product_basket "
-            f"WHERE user_id IS NOT NULL AND p_finish_time IS NOT NULL AND DATE(post_date)='{date}'"
-            f"GROUP BY DATE_FORMAT(p_finish_time, '%H') WITH ROLLUP"
-            f"")
+            f"SELECT DATE_FORMAT(p_finish_time, '%H') AS hour, (sum(p_count)-count(*))/sum(p_count) AS proba "
+            f"FROM picking_product_basket "
+            f"WHERE user_id IS NOT NULL AND DATE(p_finish_time)='{date}' "
+            f"GROUP BY hour ORDER BY proba DESC")
         data = cursor.fetchall()
         
-    return json.dumps({'column': ('time', 'count'), 'data': data})
+    return {'column': ['time', 'proba'], 'data': data}
 
 
 @app.route('/analysis/user', methods=['GET'])
@@ -157,17 +151,24 @@ def get_user_analysis():
     date = request.get_json()['date']
     
     with mysql.cursor() as cursor:
-        cursor.execute("SELECT user_id, sum(p_count) FROM picking_product_basket WHERE user_id IS NOT NULL GROUP BY user_id WITH ROLLUP")
-        users = cursor.fetchall()
+        cursor.execute(
+            f"SELECT user.user_id, user_name, (sum(p_count)-count(*))/sum(p_count) AS proba "
+            f"FROM picking_product_basket join user on picking_product_basket.user_id = user.user_id "
+            f"WHERE DATE(p_finish_time)='{date}' "
+            f"GROUP BY user.user_id ORDER BY proba DESC")
+        data = cursor.fetchall()
+        
+        if data is not None:
+            data = data[:5]
     
-    return json.dumps({'data': users})
+    return {'column': ['id', 'name', 'proba'], 'data': data}
 
 
 # Login Api
 @app.route('/user/login_info', methods=['POST'])
 def get_user_info():
     user_id = request.get_json()['user_id']
-    print(user_id)    
+
     with mysql.cursor() as cursor:
         cursor.execute(
             f"SELECT user_password, is_admin FROM user WHERE user_id='{user_id}'")
@@ -175,10 +176,8 @@ def get_user_info():
         
         if data is None:
             return json.dumps({'password': '', 'is_admin': 0})
-        password, is_admin = cursor.fetchone()
         
-    print(password, is_admin)
-    return json.dumps({'password': password, 'is_admin': is_admin})
+    return json.dumps({'password': data[0], 'is_admin': data[1]})
 
 
 # User Api
