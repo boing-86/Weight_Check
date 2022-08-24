@@ -98,6 +98,7 @@ def try_login(form):
 ###################### APIs ########################
 
 
+# SignIn, SignOut, SignUp, User Api
 @app.route('/api/logout', methods=['POST'])
 def logout():
     session.pop('user_id')
@@ -106,23 +107,6 @@ def logout():
     return redirect('/login')
 
 
-@app.route('/api/main/exp_weight', method=['POST'])
-def get_exp_weight():
-    req = requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json())
-    return req.json()
-
-
-@app.route('/api/main/result', method=['POST'])
-def get_result():
-    data = request.get_json()
-    data['user_key'] = session['user_id']
-    data['finish_time'] = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-    
-    req = requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
-    return req.json()
-
-
-# User Api
 @app.route('/api/admin/make_user', methods=['POST'])
 def make_user():
     data = request.get_json()
@@ -135,6 +119,36 @@ def make_user():
 @app.route('/api/admin/get_users', methods=['GET'])
 def get_users():
     req = requests.post(BACKEND_ADDRESS + "/user/get_users", json=request.get_json())
+    return req.json()
+
+
+# Weight Calc Api
+@app.route('/api/main/exp_weight', method=['POST'])
+def get_exp_weight():
+    req = requests.post(BACKEND_ADDRESS + "/weight", json=request.get_json())
+    return req.json()
+
+
+@app.route('/api/main/result', method=['POST'])
+def save_working_data():
+    data = request.get_json()
+    data['user_key'] = session['user_id']
+    data['finish_time'] = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    
+    req = requests.post(BACKEND_ADDRESS + "/save/weight", json=data)
+    return req.json()
+
+
+# Analyzer Api
+@app.route('/api/admin/analysis/time', method=['GET'])
+def get_time_analysis():
+    req = requests.get(BACKEND_ADDRESS + "/analysis/time", json=request.get_json())
+    return req.json()
+
+
+@app.route('/api/admin/analysis/user', method=['GET'])
+def get_user_analysis():
+    req = requests.get(BACKEND_ADDRESS + "/analysis/user", json=request.get_json())
     return req.json()
 
 

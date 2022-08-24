@@ -164,7 +164,7 @@ def get_user_analysis():
     return {'column': ['id', 'name', 'proba'], 'data': data}
 
 
-# Login Api
+# SignIn, SignOut, SignUp Api
 @app.route('/user/login_info', methods=['POST'])
 def get_user_info():
     user_id = request.get_json()['user_id']
@@ -180,7 +180,6 @@ def get_user_info():
     return json.dumps({'password': data[0], 'is_admin': data[1]})
 
 
-# User Api
 @app.route('/user/make_user', methods=['POST'])
 def make_or_update_user():
     data = request.get_json()
