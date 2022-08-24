@@ -29,6 +29,13 @@ body {
     background: rgba(83, 36, 114, 1);
 }
 
+button {
+    border: none;
+    outline: none;
+    color: white;
+    background-color: transparent;
+}
+
 .inner {
     background: rgba(83, 36, 114, 1);
     padding: 1rem;
@@ -108,7 +115,7 @@ body {
     width: 100%;
 }
 
-.inner .input-box .result .result-text{
+.inner .input-box .result .result-text {
     width: 80%;
     height: 8rem;
     text-align: center;
