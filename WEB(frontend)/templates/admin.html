@@ -35,13 +35,13 @@
 
         .container {
             display: grid;
-            grid-gap: 2vh;
-            grid-template-rows: 1fr 1fr 2fr;
-            grid-template-columns: 2fr 2fr 2fr;
+            grid-gap: 1vh;
+            grid-template-rows: 1fr 1fr 1fr;
+            grid-template-columns: 2fr 3fr 2fr;
             height: 100vh;
             grid-template-areas: 'header header header'
-                                'menu picking user'
-                                'menu picking box';
+                                'today_picking picking1 user_add'
+                                'today_picking picking2 user_list_box';
         }
 
         .container div {
@@ -61,19 +61,38 @@
             border: 1px solid #ffffff;
         }
 
-        .menu {
-            grid-area: menu;
+        .today_picking {
+            grid-area: today_picking;
             background-color: #ffffff;
+            flex-direction: column;
         }
 
-        .picking {
-            grid-area: picking;
+        .picking1 {
+            grid-area: picking1;
             background-color: #ffffff;
+            flex-direction: column;
+        }
+
+        .picking2 {
+            grid-area: picking2;
+            background-color: #ffffff;
+            flex-direction: column;
         }
 
         .user_add {
-            grid-area: user;
+            grid-area: user_add;
+            flex-direction: column;
             background-color: #ffffff;
+        }
+
+        .form input {
+            float: right;
+            margin: 1px;
+        }
+
+        .form label {
+            float: left;
+            margin: 1px;
         }
 
         .user_add button {
@@ -82,10 +101,54 @@
             background-color: #532472;
         }
 
-        .box {
-            grid-area: box;
-            background-color: #ffffff;
+        .user_list_box {
+            grid-area: user_list_box;
+            flex-direction: column;
         }
+
+        .user_list_box_header {
+            color: white;
+            height: 0.1vh;
+            display: flex;
+            text-decoration: underline;
+            text-underline-position: under;
+        }
+
+        .user_list_table {
+            background-color: white;
+        }
+
+        #user_add_form {
+            align-self: flex-start;
+            display: grid;
+            justify-items: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .user-form-field {
+            width: 30vh;
+            border: none;
+            border-bottom: 1px solid #3a3a3a;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            outline: none;
+            padding: 0 0 5px 5px;
+        }
+
+        #user_add_button {
+            width: 100%;
+            padding: 7px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            background: rgba(83, 36, 114, 1);
+            cursor: pointer;
+            outline: none;
+        }
+
+
     </style>
     <script>
         function showUser() {
@@ -134,42 +197,51 @@
         <h1>MarketKurly Check System Admin Page</h1>
         <button type="button" onclick="logout()">로그아웃</button>
     </div>
-    <div class="menu">
-        div 1
+    <div class="today_picking">
+        <div class="today_picking_header">오늘의 오피킹률</div>
     </div>
-    <div class="picking">
-        <h2>오피킹률</h2>
+    <div class="picking1">
+        <div class="picking1_header">구역별 오피킹률</div>
+    </div>
+    <div class="picking2">
+        <div class="picking2_header">시간별 오피킹률</div>
     </div>
     <div class="user_add">
-        <p>사용자 계정 만들기</p>
-        <form>
-            <label for="name">이름</label>
-            <input type="text" name="name" id="name">
-            <label for="id">아이디</label>
-            <input type="id" name="id" id="id">
-            <label for="password">비밀번호</label>
-            <input type="password" name="password" id="password">
-            <button onClick="makeUser()" type="button">등록</button>
-        </form>
+        <div class="user_add_header">
+            <p>사용자 계정 만들기</p>
+        </div>
+        <div class="form_box">
+            <form id="user_add_form">
+                <input type="text" name="username" id="name" class="user-form-field" placeholder="Username">
+                <input type="id" name="id" id="id" class="user-form-field" placeholder="Id">
+                <input type="password" name="password" id="password" class="user-form-field" placeholder="Password">
+                <input onClick="makeUser()" type="button" id="user_add_button" value="등록">
+            </form>
+
+        </div>
     </div>
-    <div class="box">
-        <p>사용자 목록</p>
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">NAME</th>
-                <th scope="col">ID</th>
-                <th scope="col">PASSWORD</th>
-              </tr>
-            </thead>
-            <tbody id="user_box">
-              <tr>
-                <td>라즈베리1</td>
-                <td>ㅇㅇ</td>
-                <td>ㅇㅇ</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="user_list_box">
+        <div class="user_list_box_header">
+            <p>사용자 목록</p>
+        </div>
+        <div class="user_list_table">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">NAME</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">PASSWORD</th>
+                </tr>
+                </thead>
+                <tbody id="user_box">
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>***</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>
