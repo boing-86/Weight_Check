@@ -59,10 +59,11 @@
 
 
 <h2 align="center">인프라 아키텍처</h2>
-![](../../../../var/folders/4v/__hbwr_565s2_4x2zlfbb1qc0000gn/T/TemporaryItems/NSIRD_screencaptureui_Hwo3OR/스크린샷 2022-08-24 오후 5.12.30.png)
+<img width="825" alt="스크린샷 2022-08-24 오후 5 26 46" src="https://user-images.githubusercontent.com/104447529/186369748-2eeb64e8-4c65-4c23-8b9c-6c601c08b5b8.png">
 
 <h2 align="center">서비스 구성</h2>
-![](../../../../var/folders/4v/__hbwr_565s2_4x2zlfbb1qc0000gn/T/TemporaryItems/NSIRD_screencaptureui_nDY4eH/스크린샷 2022-08-24 오후 5.15.02.png)
+<img width="1108" alt="스크린샷 2022-08-24 오후 5 27 08" src="https://user-images.githubusercontent.com/104447529/186369629-41b6b606-353d-4e62-87f1-2e0c20edcfeb.png">
+
 <h2 align="center">사용 기술</h2>
 
 <h4>- Languages</h4>
