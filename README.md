@@ -2,7 +2,7 @@
 <h3>중량 측정을 이용한 오발송 검수 자동화 시스템</h3>
 <br>
 본 서비스는 물류 작업자를 위한 오발송 검수 시스템으로, 가우스 분포로 상품 미출/추가오류 등을 분류하여 저비용으로 운용 가능한 효율적인 검수 서비스를 제공합니다.
-
+<br>
 <li>배포 주소: www.kurlycheck.shop </li>
 <br>
 <li>시연 영상: https://www.youtube.com/watch?v=FvDIk1UeYLE</li>
