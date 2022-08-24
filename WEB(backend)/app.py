@@ -7,8 +7,10 @@ import math
 
 app = Flask(__name__)
 
-if not environ.get('KurlyCheckDbHost') and not environ.get('KurlyCheckDbPort') and\
-        not environ.get('KurlyCheckDbUser') and not environ.get('KurlyCheckDbPswd'):
+if  not environ.get('KurlyCheckDbHost') and\
+    not environ.get('KurlyCheckDbPort') and\
+    not environ.get('KurlyCheckDbUser') and\
+    not environ.get('KurlyCheckDbPswd'):
     print("\033[31mBackend(app.py) : make environment variable for db server connection!\033[0m")
 
 mysql = pymysql.connect(host=environ.get('KurlyCheckDbHost'),  # Endpoint
@@ -164,7 +166,7 @@ def get_user_analysis():
     return {'column': ['id', 'name', 'proba'], 'data': data}
 
 
-# Login Api
+# SignIn, SignOut, SignUp Api
 @app.route('/user/login_info', methods=['POST'])
 def get_user_info():
     user_id = request.get_json()['user_id']
@@ -180,7 +182,6 @@ def get_user_info():
     return json.dumps({'password': data[0], 'is_admin': data[1]})
 
 
-# User Api
 @app.route('/user/make_user', methods=['POST'])
 def make_or_update_user():
     data = request.get_json()
@@ -274,7 +275,7 @@ def getQ(query):
         return cursor.fetchall()
 
 
-#@app.route("/gen/test1")
+@app.route("/gen/test1")
 def test1_generator():
     target = "picking_product_basket"
     products = [data[0] for data in getQ("SELECT product_id FROM product")]
