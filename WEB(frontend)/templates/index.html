@@ -1,42 +1,43 @@
 <!DOCTYPE HTML>
 <html lang="ko">
 <head>
-        <meta charset="UTF-8">
+	<meta charset="UTF-8">
     <title>MarketKurly Check System</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='kurly_icon_purple.png') }}">
 
-        <!--폰트-->
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
-        <!--jquery-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <!--css 경로-->
-        <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+	<!--폰트-->
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
+	<!--jquery-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!--css 경로-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
-        <div class="wrapper login-wrap">
-                <div class="inner">
-                                <div class="header">
-                                        <img src="{{ url_for('static', filename='kurly_logo_white.png') }}" />
-                                        <h2>바구니를 올리고 바코드를 찍어 주세요</h2>
-                                </div>
-                                <div class="input-box">
-                                        <div class="inner-input">
-                                                <p>실제 중량</p>
-                                                <p id="real_weight">0kg</p>
-                                        </div>
-                                        <div class="inner-input">
-                                                <p>예상 중량</p>
-                                                <p id="exp_weight">? kg ~ ? kg</p>
-                                        </div>
-                                        <div class="result" >
-                                                <p>결과</p>
-                                                <div class="result-text">
-                                                        <p id="result_box">PASS</p>
-                                                </div>
-                                        </div>
-                                </div>
-                </div>
-        </div>
-        <script src="{{ url_for('static', filename='index.js') }}"></script>
+	<div class="wrapper login-wrap">
+		<div class="inner">
+				<div class="header">
+					<img src="{{ url_for('static', filename='kurly_logo_white.png') }}" />
+					<h2>바구니를 올리고 바코드를 찍어 주세요</h2>
+				</div>
+				<div class="input-box">
+					<div class="inner-input">
+						<p>실제 중량</p>
+						<p id="real_weight">0kg</p>
+					</div>
+					<div class="inner-input">
+						<p>예상 중량</p>
+						<p id="exp_weight">? kg ~ ? kg</p>
+					</div>
+					<div class="result" >
+						<p>결과</p>
+						<div class="result-text">
+							<p id="result_box">PASS</p>
+						</div>
+					</div>
+				</div>
+            <button type="button" onClick="logout()">Logout</button>
+		</div>
+	</div>
+	<script src="{{ url_for('static', filename='index.js') }}"></script>
 </body>
 </html>
